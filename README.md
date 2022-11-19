@@ -29,6 +29,7 @@ xcode-select - install
 4. Once Homebrew is installed, enter the following in the terminal:
 ```zsh
 brew install cmake
+brew install doxygen
 ```
 
 5. Download jimo:
@@ -44,8 +45,9 @@ mkdir build
 cd build
 cmake ..
 make
+make docs
 ```
-As an alternative to building on the command line, you can use an IDE. For that, you will have to follow the IDE specific instructions for using cmake to create project files.
+As an alternative to building on the command line, you can use an IDE. For that, you will have to follow the IDE specific instructions for using cmake to create project files. You must still build the documentation from a terminal.
 
 ### Windows
 To be added
