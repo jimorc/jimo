@@ -33,3 +33,4 @@
 
 # CMake related products
 build/
+.vscode/
