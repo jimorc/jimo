@@ -6,5 +6,3 @@ add_library(jimo
 target_include_directories(jimo
     PUBLIC
     include)
-
-target_compile_features(jimo PRIVATE cxx_std_20)
