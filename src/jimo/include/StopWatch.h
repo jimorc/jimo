@@ -34,7 +34,6 @@ namespace jimo::timing
     /// using one of the convenience duration types, such as 
     /// <A HREF="https://en.cppreference.com/w/cpp/chrono/duration">std::chrono::nanoseconds,
     /// std::chrono::milliseconds, std::chrono::minutes</A>, and so forth.
-    template<typename duration_t>
     class StopWatch
     {
         public:
@@ -55,9 +54,9 @@ namespace jimo::timing
             /// \name Properties
            ///@{
             ///
-            /// \brief Retrieve the duration between the calls to Start() and Stop().
+            /// \brief Retrieve the std::chrono::duration between the calls to Start() and Stop().
             /// \returns The difference between the start and stop times. 
-            duration_t Duration() const noexcept
+            auto Duration() const noexcept
             {
                 return m_stopTime - m_startTime;
             }
@@ -66,13 +65,13 @@ namespace jimo::timing
             /// \name Methods
            ///@{
             ///
-            /// \brief Start the stop watch
+            /// \brief Start timing
             /// \warning Calliing Start() simply resets the start time to the current time.
             void Start()
             {
                 m_startTime = std::chrono::steady_clock::now();
             }
-            /// \brief Stop the stop watch
+            /// \brief Stop timing
             /// \warning Calling Stop() simply sets the stop time to the current time.
             /// No check is performed to determine if Start() was called first.
             void Stop() noexcept
