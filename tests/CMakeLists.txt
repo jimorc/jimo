@@ -9,7 +9,7 @@ FetchContent_MakeAvailable(googletest)
 add_library(GTest::GTest INTERFACE IMPORTED)
 target_link_libraries(GTest::GTest INTERFACE gtest_main)
 
-add_executable(jimoTest jimoTest.cpp)
+add_executable(jimoTest StopWatchTests.cpp)
 
 target_link_libraries(jimoTest
  PRIVATE

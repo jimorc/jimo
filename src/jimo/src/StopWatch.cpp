@@ -2,5 +2,5 @@
 
 namespace jimo::timing
 {
-    StopWatch::StopWatch() {}
+//    StopWatch::StopWatch() {}
 }
