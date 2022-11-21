@@ -63,3 +63,36 @@ TEST(StopWatchTests, StopAlreadyStopedStopWatchTest)
     }
     FAIL();
 }
+
+TEST(StopWatchTests, GetDurationFromRunningStopWatchTest)
+{
+    StopWatch watch;
+    watch.Start();
+    try
+    {
+        [[maybe_unused]] auto duration = watch.Duration();
+    }
+    catch (StopWatchException& e)
+    {
+        ASSERT_STREQ(e.what(), 
+            "Cannot retrieve duration from StopWatch that is currently running");
+        return;
+    }
+    FAIL();
+}
+
+TEST(StopWatchTests, GetDurationFromStopWatchthatHasNotRunTest)
+{
+    StopWatch watch;
+    try
+    {
+        [[maybe_unused]] auto duration = watch.Duration();
+    }
+    catch (StopWatchException& e)
+    {
+        ASSERT_STREQ(e.what(), 
+            "Cannot retrieve duration from StopWatch that has not been run");
+        return;
+    }
+    FAIL();
+}

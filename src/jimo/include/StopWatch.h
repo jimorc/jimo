@@ -57,7 +57,9 @@ namespace jimo::timing
             ///
             /// \brief Retrieve the std::chrono::duration between the calls to Start() and Stop().
             /// \returns The difference between the start and stop times. 
-            std::chrono::nanoseconds Duration() const noexcept;
+            /// \exception StopWatchException if Duration is called while stop watch is running.
+            /// \exception StopWatchException if Duration is called before Start() and Stop() are called.
+            std::chrono::nanoseconds Duration() const;
             ///@}
             ///
             /// \name Methods
