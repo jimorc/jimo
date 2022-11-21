@@ -96,3 +96,36 @@ TEST(StopWatchTests, TestGetDurationFromStopWatchthatHasNotRun)
     }
     FAIL();
 }
+
+TEST(StopWatchTests, TestStartNextLap)
+{
+    StopWatch watch;
+    watch.Start();
+    std::this_thread::sleep_for(5ms);
+    watch.StartNextLap();
+    std::this_thread::sleep_for(10ms);
+    watch.Stop();
+
+    auto lapTimes = watch.GetLapTimes();
+
+    ASSERT_EQ(lapTimes.size(), 2);
+    ASSERT_GT(lapTimes[0], 5ms);
+    ASSERT_LT(lapTimes[0], 10ms);
+    ASSERT_GT(lapTimes[1], 10ms);
+    ASSERT_LT(lapTimes[1], 15ms);
+    auto totalLapTimes = lapTimes[0] + lapTimes[1];
+    ASSERT_EQ(totalLapTimes, watch.GetDuration());
+}
+
+TEST(StopWatchTests, TestGetLapTimesNoStartNextLap)
+{
+    StopWatch watch;
+    watch.Start();
+    std::this_thread::sleep_for(10ms);
+    watch.Stop();
+
+    auto lapTimes = watch.GetLapTimes();
+
+    ASSERT_EQ(lapTimes.size(), 1);
+    ASSERT_EQ(lapTimes[0], watch.GetDuration());
+}

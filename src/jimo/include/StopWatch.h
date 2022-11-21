@@ -61,9 +61,14 @@ namespace jimo::timing
             /// \exception StopWatchException if GetDuration is called while stop watch is running.
             /// \exception StopWatchException if GetDuration is called before Start() and Stop() are called.
             std::chrono::nanoseconds GetDuration() const;
+            /// \brief Retrieve lap times
+            /// \returns A vector of lap times.
+            std::vector<std::chrono::nanoseconds> GetLapTimes();
             /// \brief Start timing
             /// \throws StopWatchException if you call Start() when the watch is already running.
             void Start();
+            /// \brief Save timing of current lap and start timing of next lap
+            void StartNextLap();
             /// \brief Stop timing
             /// \exception StopWatchException if you attempt to stop a stop watch that
             /// is not running.

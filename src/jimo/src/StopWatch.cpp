@@ -1,4 +1,5 @@
 #include "StopWatch.h"
+#import <algorithm>
 
 namespace jimo::timing
 {
@@ -45,4 +46,24 @@ namespace jimo::timing
             throw StopWatchException("Attempting to stop a StopWatch that is not running.");
         }
     }
+
+    void StopWatch::StartNextLap()
+    {
+        m_laps.push_back(std::chrono::steady_clock::now());
+    }
+
+    std::vector<std::chrono::nanoseconds> StopWatch::GetLapTimes()
+    {
+        std::vector<std::chrono::nanoseconds> lapsedTimes;
+        auto lapIter = m_laps.cbegin();
+        lapsedTimes.push_back(*lapIter - m_startTime);
+        auto nextIter = lapIter + 1;
+        while (nextIter < m_laps.cend())
+        {
+            lapsedTimes.push_back(*nextIter - *lapIter);
+            ++lapIter;
+            ++nextIter;
+        }
+        return lapsedTimes;
+   }
 }
