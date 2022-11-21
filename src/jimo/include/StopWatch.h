@@ -2,6 +2,7 @@
 /// \file StopWatch.h
 ///
 #pragma once
+#include "StopWatchException.h"
 #import <chrono>
 /// \namespace jimo
 /// \brief The main namespace for all classes in this library.
@@ -41,7 +42,7 @@ namespace jimo::timing
             ///@{
 
             /// \brief The default StopWatch constructor
-            StopWatch() {}
+            StopWatch() : m_running(false) {}
             /// \brief Copy constructor
             StopWatch(const StopWatch&) = delete;
             /// \brief Move constructor
@@ -66,10 +67,18 @@ namespace jimo::timing
            ///@{
             ///
             /// \brief Start timing
-            /// \warning Calliing Start() simply resets the start time to the current time.
+            /// \throws StopWatchException if you call Start() when the watch is already running.
             void Start()
             {
-                m_startTime = std::chrono::steady_clock::now();
+                if (m_running)
+                {
+                    throw StopWatchException("Attempting to start a stop watch that is already running!");
+                }
+                else
+                {
+                    m_running = true;
+                    m_startTime = std::chrono::steady_clock::now();
+                }
             }
             /// \brief Stop timing
             /// \warning Calling Stop() simply sets the stop time to the current time.
@@ -80,6 +89,7 @@ namespace jimo::timing
             }
             ///@}
         private:
+            bool m_running;
             std::chrono::time_point<std::chrono::steady_clock> m_startTime;
             std::chrono::time_point<std::chrono::steady_clock> m_stopTime;
     };
