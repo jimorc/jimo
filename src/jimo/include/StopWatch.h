@@ -53,19 +53,14 @@ namespace jimo::timing
             /// \brief Move operator=
             StopWatch& operator =(StopWatch&&) = delete;
             ///@}
-            /// \name Properties
+            /// \name Methods
            ///@{
             ///
             /// \brief Retrieve the std::chrono::duration between the calls to Start() and Stop().
             /// \returns The difference between the start and stop times. 
-            /// \exception StopWatchException if Duration is called while stop watch is running.
-            /// \exception StopWatchException if Duration is called before Start() and Stop() are called.
-            std::chrono::nanoseconds Duration() const;
-            ///@}
-            ///
-            /// \name Methods
-           ///@{
-            ///
+            /// \exception StopWatchException if GetDuration is called while stop watch is running.
+            /// \exception StopWatchException if GetDuration is called before Start() and Stop() are called.
+            std::chrono::nanoseconds GetDuration() const;
             /// \brief Start timing
             /// \throws StopWatchException if you call Start() when the watch is already running.
             void Start();

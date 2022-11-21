@@ -5,7 +5,7 @@ namespace jimo::timing
     StopWatch::StopWatch() : m_running(false), 
         m_startTime(std::chrono::steady_clock::time_point::min()) {} 
 
-    std::chrono::nanoseconds StopWatch::Duration() const
+    std::chrono::nanoseconds StopWatch::GetDuration() const
     {
         if (m_running)
         {

@@ -11,7 +11,7 @@ TEST(StopWatchTests, StopWatchTest)
     watch.Start();
     std::this_thread::sleep_for(200ms);
     watch.Stop();
-    std::chrono::duration duration = watch.Duration();
+    std::chrono::duration duration = watch.GetDuration();
     ASSERT_GE(duration, 200'000'000ns);
     ASSERT_GE(duration, 200ms);
 }
@@ -70,7 +70,7 @@ TEST(StopWatchTests, GetDurationFromRunningStopWatchTest)
     watch.Start();
     try
     {
-        [[maybe_unused]] auto duration = watch.Duration();
+        [[maybe_unused]] auto duration = watch.GetDuration();
     }
     catch (StopWatchException& e)
     {
@@ -86,7 +86,7 @@ TEST(StopWatchTests, GetDurationFromStopWatchthatHasNotRunTest)
     StopWatch watch;
     try
     {
-        [[maybe_unused]] auto duration = watch.Duration();
+        [[maybe_unused]] auto duration = watch.GetDuration();
     }
     catch (StopWatchException& e)
     {
