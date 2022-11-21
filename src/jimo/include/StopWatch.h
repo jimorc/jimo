@@ -4,6 +4,7 @@
 #pragma once
 #include "StopWatchException.h"
 #import <chrono>
+#import <vector>
 /// \namespace jimo
 /// \brief The main namespace for all classes in this library.
 /// \namespace timing
@@ -76,6 +77,6 @@ namespace jimo::timing
         private:
             bool m_running;
             std::chrono::time_point<std::chrono::steady_clock> m_startTime;
-            std::chrono::time_point<std::chrono::steady_clock> m_stopTime;
+            std::vector<std::chrono::time_point<std::chrono::steady_clock>> m_laps;
     };
 }

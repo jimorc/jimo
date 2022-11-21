@@ -3,8 +3,7 @@
 namespace jimo::timing
 {
     StopWatch::StopWatch() : m_running(false), 
-        m_startTime(std::chrono::steady_clock::time_point::min()), 
-        m_stopTime(std::chrono::steady_clock::time_point::min()) {}
+        m_startTime(std::chrono::steady_clock::time_point::min()) {} 
 
     std::chrono::nanoseconds StopWatch::Duration() const
     {
@@ -18,7 +17,7 @@ namespace jimo::timing
             throw StopWatchException(
                 "Cannot retrieve duration from StopWatch that has not been run");
         }
-        return m_stopTime - m_startTime;
+        return *(m_laps.crbegin()) - m_startTime;
     }
  
     void StopWatch::Start()
@@ -38,7 +37,7 @@ namespace jimo::timing
     {
         if(m_running)
         {
-            m_stopTime = std::chrono::steady_clock::now();
+            m_laps.push_back(std::chrono::steady_clock::now());
             m_running = false;
         }
         else
