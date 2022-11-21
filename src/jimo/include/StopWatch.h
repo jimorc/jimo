@@ -81,11 +81,19 @@ namespace jimo::timing
                 }
             }
             /// \brief Stop timing
-            /// \warning Calling Stop() simply sets the stop time to the current time.
-            /// No check is performed to determine if Start() was called first.
-            void Stop() noexcept
+            /// \exception StopWatchException if you attempt to stop a stop watch that
+            /// is not running.
+           void Stop()
             {
-                m_stopTime = std::chrono::steady_clock::now();
+                if(m_running)
+                {
+                    m_stopTime = std::chrono::steady_clock::now();
+                    m_running = false;
+                }
+                else
+                {
+                    throw StopWatchException("Attempting to stop a StopWatch that is not running.");
+                }
             }
             ///@}
         private:

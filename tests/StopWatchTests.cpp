@@ -31,3 +31,35 @@ TEST(StopWatchTests, StartAlreadyRunningWatchTest)
     }
     FAIL();
 }
+
+TEST(StopWatchTests, StopStopWatchThatIsNotRunningTest)
+{
+    StopWatch watch;
+    try
+    {
+        watch.Stop();
+    }
+    catch (StopWatchException& e)
+    {
+        ASSERT_STREQ(e.what(), "Attempting to stop a StopWatch that is not running.");
+        return;
+    }
+    FAIL();
+}
+
+TEST(StopWatchTests, StopAlreadyStopedStopWatchTest)
+{
+    StopWatch watch;
+    watch.Start();
+    watch.Stop();
+    try
+    {
+        watch.Stop();
+    }
+    catch (StopWatchException& e)
+    {
+        ASSERT_STREQ(e.what(), "Attempting to stop a StopWatch that is not running.");
+        return;
+    }
+    FAIL();
+}
