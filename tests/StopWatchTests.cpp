@@ -5,7 +5,7 @@
 using namespace jimo::timing;
 using namespace std::chrono_literals;
 
-TEST(StopWatchTests, StopWatchTest)
+TEST(StopWatchTests, TestStopWatch)
 {
     StopWatch watch;
     watch.Start();
@@ -16,7 +16,7 @@ TEST(StopWatchTests, StopWatchTest)
     ASSERT_GE(duration, 200ms);
 }
 
-TEST(StopWatchTests, StartAlreadyRunningWatchTest)
+TEST(StopWatchTests, TestStartAlreadyRunningWatch)
 {
     StopWatch watch;
     watch.Start();
@@ -32,7 +32,7 @@ TEST(StopWatchTests, StartAlreadyRunningWatchTest)
     FAIL();
 }
 
-TEST(StopWatchTests, StopStopWatchThatIsNotRunningTest)
+TEST(StopWatchTests, TestStopStopWatchThatIsNotRunning)
 {
     StopWatch watch;
     try
@@ -47,7 +47,7 @@ TEST(StopWatchTests, StopStopWatchThatIsNotRunningTest)
     FAIL();
 }
 
-TEST(StopWatchTests, StopAlreadyStopedStopWatchTest)
+TEST(StopWatchTests, TestStopAlreadyStopedStopWatch)
 {
     StopWatch watch;
     watch.Start();
@@ -64,7 +64,7 @@ TEST(StopWatchTests, StopAlreadyStopedStopWatchTest)
     FAIL();
 }
 
-TEST(StopWatchTests, GetDurationFromRunningStopWatchTest)
+TEST(StopWatchTests, TestGetDurationFromRunningStopWatch)
 {
     StopWatch watch;
     watch.Start();
@@ -81,7 +81,7 @@ TEST(StopWatchTests, GetDurationFromRunningStopWatchTest)
     FAIL();
 }
 
-TEST(StopWatchTests, GetDurationFromStopWatchthatHasNotRunTest)
+TEST(StopWatchTests, TestGetDurationFromStopWatchthatHasNotRun)
 {
     StopWatch watch;
     try

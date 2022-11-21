@@ -3,7 +3,7 @@
 
 using namespace jimo::timing;
 
-TEST(StopWatchExceptionTests, StopWatchExceptionStringTest)
+TEST(StopWatchExceptionTests, TestStopWatchExceptionString)
 {
     EXPECT_THROW({
         try
@@ -20,7 +20,7 @@ TEST(StopWatchExceptionTests, StopWatchExceptionStringTest)
     }, StopWatchException);
 }
 
-TEST(StopWatchExceptionTests, StopWatchExceptionCharArrayTest)
+TEST(StopWatchExceptionTests, TestStopWatchExceptionCharArray)
 {
     EXPECT_THROW({
         try
