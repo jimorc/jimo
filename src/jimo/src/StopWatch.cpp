@@ -49,7 +49,14 @@ namespace jimo::timing
 
     void StopWatch::StartNextLap()
     {
-        m_laps.push_back(std::chrono::steady_clock::now());
+        if (m_running)
+        {
+            m_laps.push_back(std::chrono::steady_clock::now());
+        }
+        else
+        {
+            throw StopWatchException("Cannot call StartNextLap for stop watch that is not running.");
+        }
     }
 
     std::vector<std::chrono::nanoseconds> StopWatch::GetLapTimes()

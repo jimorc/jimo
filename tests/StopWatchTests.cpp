@@ -129,3 +129,19 @@ TEST(StopWatchTests, TestGetLapTimesNoStartNextLap)
     ASSERT_EQ(lapTimes.size(), 1);
     ASSERT_EQ(lapTimes[0], watch.GetDuration());
 }
+
+TEST(StopWatchTests, TestStartNextLapWhenStopWatchNotStarted)
+{
+    StopWatch watch;
+    try
+    {
+        watch.StartNextLap();
+    }
+    catch (StopWatchException& e)
+    {
+        ASSERT_STREQ(e.what(), 
+            "Cannot call StartNextLap for stop watch that is not running.");
+        return;
+    }
+    FAIL();
+}
