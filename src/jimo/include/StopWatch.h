@@ -42,7 +42,7 @@ namespace jimo::timing
             ///@{
 
             /// \brief The default StopWatch constructor
-            StopWatch() : m_running(false) {}
+            StopWatch();
             /// \brief Copy constructor
             StopWatch(const StopWatch&) = delete;
             /// \brief Move constructor
@@ -57,10 +57,7 @@ namespace jimo::timing
             ///
             /// \brief Retrieve the std::chrono::duration between the calls to Start() and Stop().
             /// \returns The difference between the start and stop times. 
-            auto Duration() const noexcept
-            {
-                return m_stopTime - m_startTime;
-            }
+            std::chrono::nanoseconds Duration() const noexcept;
             ///@}
             ///
             /// \name Methods
@@ -68,33 +65,11 @@ namespace jimo::timing
             ///
             /// \brief Start timing
             /// \throws StopWatchException if you call Start() when the watch is already running.
-            void Start()
-            {
-                if (m_running)
-                {
-                    throw StopWatchException("Attempting to start a stop watch that is already running!");
-                }
-                else
-                {
-                    m_running = true;
-                    m_startTime = std::chrono::steady_clock::now();
-                }
-            }
+            void Start();
             /// \brief Stop timing
             /// \exception StopWatchException if you attempt to stop a stop watch that
             /// is not running.
-           void Stop()
-            {
-                if(m_running)
-                {
-                    m_stopTime = std::chrono::steady_clock::now();
-                    m_running = false;
-                }
-                else
-                {
-                    throw StopWatchException("Attempting to stop a StopWatch that is not running.");
-                }
-            }
+            void Stop();
             ///@}
         private:
             bool m_running;
