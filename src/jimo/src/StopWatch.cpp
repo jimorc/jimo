@@ -61,6 +61,10 @@ namespace jimo::timing
 
     std::vector<std::chrono::nanoseconds> StopWatch::GetLapTimes()
     {
+        if (m_running)
+        {
+            throw StopWatchException("Cannot retrieve lap times while stop watch is running");
+        }
         std::vector<std::chrono::nanoseconds> lapsedTimes;
         auto lapIter = m_laps.cbegin();
         lapsedTimes.push_back(*lapIter - m_startTime);
@@ -72,5 +76,5 @@ namespace jimo::timing
             ++nextIter;
         }
         return lapsedTimes;
-   }
+    }
 }
