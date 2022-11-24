@@ -166,3 +166,23 @@ TEST(StopWatchTests, TestGetLapTimesWhenStopWatchIsRunning)
     }
     FAIL();
 }
+
+TEST(StopWatchTests, TestGetLapTimesWhenStopWatchNeverRun)
+{
+    StopWatch watch;
+    try
+    {
+        auto lapTimes = watch.GetLapTimes();
+    }
+    catch (StopWatchException& e)
+    {
+        ASSERT_STREQ(e.what(), 
+            "Cannot retrieve lap times. Stop watch never ran");
+        return;
+    }
+    catch (std::exception& ex)
+    {
+        FAIL();
+    }
+    FAIL();
+}

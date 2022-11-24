@@ -50,7 +50,8 @@ namespace jimo::timing
             /// \returns A vector of lap times.
             /// \exception StopWatchException if GetLapTimes() is called while the stop watch
             /// is running.
-            std::vector<std::chrono::nanoseconds> GetLapTimes();
+            /// \exception StopWatchException if GetLapTimes() called before stop watch ever started.
+                std::vector<std::chrono::nanoseconds> GetLapTimes();
             /// \brief Start timing
             /// \exception StopWatchException if you call Start() when the watch is already running.
             void Start();
