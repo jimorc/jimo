@@ -199,3 +199,12 @@ TEST(StopWatchTests, TestStartTwice)
     watch.Stop();
     ASSERT_EQ(1, watch.GetLapTimes().size());
 }
+
+TEST(StopWatchTests, TestStopWithoutSavingTime)
+{
+    StopWatch watch;
+    watch.Start();
+    watch.StartNextLap();
+    watch.StopWithoutSavingTime();
+    ASSERT_EQ(1, watch.GetLapTimes().size());
+}

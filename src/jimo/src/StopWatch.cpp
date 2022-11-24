@@ -84,4 +84,9 @@ namespace jimo::timing
             return lapsedTimes;
         }
     }
+
+    void StopWatch::StopWithoutSavingTime()
+    {
+        m_running = false;
+    }
 }

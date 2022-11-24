@@ -63,6 +63,8 @@ namespace jimo::timing
             /// \exception StopWatchException if you attempt to stop a stop watch that
             /// is not running.
             void Stop();
+            /// \brief Stop timing without saving the duration.
+            void StopWithoutSavingTime();
             ///@}
         private:
             bool m_running;
