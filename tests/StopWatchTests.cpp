@@ -186,3 +186,16 @@ TEST(StopWatchTests, TestGetLapTimesWhenStopWatchNeverRun)
     }
     FAIL();
 }
+
+TEST(StopWatchTests, TestStartTwice)
+{
+    StopWatch watch;
+    watch.Start();
+    watch.Stop();
+
+    EXPECT_EQ(1, watch.GetLapTimes().size());
+
+    watch.Start();
+    watch.Stop();
+    ASSERT_EQ(1, watch.GetLapTimes().size());
+}

@@ -30,6 +30,7 @@ namespace jimo::timing
         else
         {
             m_running = true;
+            m_laps.clear();
             m_startTime = std::chrono::steady_clock::now();
         }
     }
