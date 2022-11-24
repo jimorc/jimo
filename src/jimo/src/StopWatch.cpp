@@ -87,6 +87,13 @@ namespace jimo::timing
 
     void StopWatch::StopWithoutSavingTime()
     {
-        m_running = false;
+        if(m_running)
+        {
+            m_running = false;
+        }
+        else
+        {
+            throw StopWatchException("StopWithoutSavingTime() being called before stop watch started");
+        }
     }
 }

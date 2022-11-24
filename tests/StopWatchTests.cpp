@@ -208,3 +208,23 @@ TEST(StopWatchTests, TestStopWithoutSavingTime)
     watch.StopWithoutSavingTime();
     ASSERT_EQ(1, watch.GetLapTimes().size());
 }
+
+TEST(StopWatchTests, TestStopWithoutSavingTimeBeforeStart)
+{
+    StopWatch watch;
+    try
+    {
+       watch.StopWithoutSavingTime();
+    }
+    catch (StopWatchException& e)
+    {
+        ASSERT_STREQ(e.what(), 
+            "StopWithoutSavingTime() being called before stop watch started");
+        return;
+    }
+    catch (std::exception& ex)
+    {
+        FAIL();
+    }
+    FAIL();
+}
