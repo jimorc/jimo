@@ -21,6 +21,9 @@ namespace jimo::timing
     /// <A HREF="https://en.cppreference.com/w/cpp/chrono/steady_clock">
     /// std::chrono::steady_clock</A> is used internally in this class. 
 
+    /// Here is a program that illustrates the use of the StopWatch class:
+    /// \include StopWatch/StopWatch.cpp
+
     class StopWatch
     {
         public:
@@ -64,6 +67,7 @@ namespace jimo::timing
             /// is not running.
             void Stop();
             /// \brief Stop timing without saving the duration.
+            /// \exception StopWatchException if call before stop watch is started.
             void StopWithoutSavingTime();
             ///@}
         private:
