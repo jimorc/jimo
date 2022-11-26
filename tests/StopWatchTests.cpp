@@ -1,6 +1,6 @@
 #include "StopWatch.h"
 #include <gtest/gtest.h>
-#import <thread>
+#include <thread>
 
 using namespace jimo::timing;
 using namespace std::chrono_literals;

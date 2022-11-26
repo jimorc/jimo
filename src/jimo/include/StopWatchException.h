@@ -1,6 +1,6 @@
 /// \file StopWatchException.h
 #pragma once
-#import <stdexcept>
+#include <stdexcept>
 
 namespace jimo::timing
 {

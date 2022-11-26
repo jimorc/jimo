@@ -3,8 +3,8 @@
 ///
 #pragma once
 #include "StopWatchException.h"
-#import <chrono>
-#import <vector>
+#include <chrono>
+#include <vector>
 /// \namespace jimo
 /// \brief The main namespace for all classes in this library.
 /// \namespace timing

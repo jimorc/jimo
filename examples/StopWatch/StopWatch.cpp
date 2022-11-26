@@ -1,7 +1,7 @@
 #include "StopWatch.h"
-#import <iostream>
-#import <thread>
-#import <chrono>
+#include <iostream>
+#include <thread>
+#include <chrono>
 
 using namespace jimo::timing;
 using namespace std::chrono_literals;
