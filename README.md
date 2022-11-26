@@ -30,7 +30,11 @@ xcode-select - install
 ```zsh
 brew install cmake
 brew install doxygen
+brew install gcc
+brew install ninja
 ```
+gcc is required because much of C++20 is not supported in Apple's version of clang even
+though the equivalent version of standard clang does.
 
 5. Download jimo:
 ```zsh
@@ -43,10 +47,15 @@ git clone https://github.com/jimorc/jimo.git
 cd jimo
 mkdir build
 cd build
-cmake ..
+cmake -D CMAKE_CXX_COMPILER=<path_to_g++_compiler> ..
 make
 make docs
 ```
+<code>path_to_g++_compiler</code> on Apple silicon systems is <code>/opt/homebrew/bin/g++-XX</code>
+where <code>XX</code> is the version of gcc that you installed using homebrew. On Intel
+ Macs,
+<code>path_to_g++_compiler</code>> is <code>/usr/local/bin/g++-XX</code>.
+
 As an alternative to building on the command line, you can use an IDE. For that, you will have to follow the IDE specific instructions for using cmake to create project files. You must still build the documentation from a terminal.
 
 ### Windows
