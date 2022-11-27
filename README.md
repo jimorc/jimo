@@ -56,6 +56,12 @@ where <code>XX</code> is the version of gcc that you installed using homebrew. O
  Macs,
 <code>path_to_g++_compiler</code>> is <code>/usr/local/bin/g++-XX</code>.
 
+> **Note**
+> As of November 2022, there is no native gdb on Apple silicon. It is possible to debug
+using lldb on the command line.
+>
+> I have been unsuccessful attempting to debug from within VS Code.
+
 As an alternative to building on the command line, you can use an IDE. For that, you will have to follow the IDE specific instructions for using cmake to create project files. You must still build the documentation from a terminal.
 
 ### Windows
