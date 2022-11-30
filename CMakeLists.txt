@@ -9,7 +9,13 @@ project(jimo
     DESCRIPTION "A library containing general purpose classes"
     LANGUAGES CXX)
 
-add_compile_options(-W -Wall -Werror)
+
+
+if (WIN32)
+#    add_compile_options(/W4 /WX)
+else ()
+    add_compile_options(-W -Wall -Werror)
+endif ()
 
 add_subdirectory(src)
 add_subdirectory(tests)
@@ -36,5 +42,5 @@ if (DOXYGEN_FOUND)
         COMMENT "Generating API documentation with Doxygen"
         VERBATIM )
 else (DOXYGEN_FOUND)
-  message("Doxygen need to be installed to generate the doxygen documentation")
+  message("Doxygen needs to be installed to generate the doxygen documentation")
 endif (DOXYGEN_FOUND)

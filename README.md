@@ -11,7 +11,7 @@ The StopWatch class provides funtionality to time operations and to also provide
 
 ## Building jimo
 
-This library is being developed on MacOS 13 using C++20. After some functionality is added to this library, it will be ported to Windows and Linux.
+This library is being developed on MacOS 13 using C++20 and have just started porting it to Windows 11.
 
 ### MacOS
 
@@ -65,7 +65,26 @@ using lldb on the command line.
 As an alternative to building on the command line, you can use an IDE. For that, you will have to follow the IDE specific instructions for using cmake to create project files. You must still build the documentation from a terminal.
 
 ### Windows
-To be added
+The following 
+1. Install Visual Studio (latest version). Community edition is sufficient. Select and install:
+   * Desktop development with C++
+
+2. Install CMake from the [CMake Download Page](https://cmake.org/download/).
+
+3. Install Doxygen from the [Doxygen Download Page](https://doxygen.nl/download.html)
+
+3. Open a command prompt and enter:
+```cmd
+cd <your-root-projects-directory>
+git clone https://github.com/jimorc/jimo.git
+cd jimo
+mkdir build
+cd build
+cmake ..
+cmake --build . --config Debug --target ALL_BUILD -j 6
+cmake --build . --config Debug --target docs -j 6
+```
+   If you wish, replace 6 with the number of cores that your processor has.
 
 ### Linux
 To be added.
