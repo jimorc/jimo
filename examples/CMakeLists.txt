@@ -1,1 +1,2 @@
 add_subdirectory(StopWatch)
+add_subdirectory(Timer)

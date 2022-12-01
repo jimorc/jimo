@@ -9,6 +9,12 @@ This library contains a small collection of general purpose classes, including t
 
 The StopWatch class provides funtionality to time operations and to also provide lap timing.
 
+### OnceTimer
+
+The OnceTimer class waits a specified amount of time, or until a specified time, and then fires an
+"event". A OnceTimer object can only be used once; that is, it will only fire an event once. 
+Any attempt to reuse a OnceTimer object throws an exception.
+
 ## Building jimo
 
 This library is being developed on MacOS 13 using C++20 and have just started porting it to Windows 11.
