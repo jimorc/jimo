@@ -83,7 +83,7 @@ namespace jimo
                 combine(delegate);
                 return *this;
             }
-            /// @brief Invoes the functions in the current Delegate object.
+            /// @brief Invokes the functions in the current Delegate object.
             /// @return The value returned from executing the last function in the Delegate object.
             result_t operator ()() const
             {
