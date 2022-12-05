@@ -12,17 +12,20 @@
 
 namespace jimo
 {
+
+
     /// @brief Represents a delegate object, which is a data structure that refers to
     /// functions, static class methods, 
     /// class instances and instance methods, or Functors 
     /// that can be used as callbacks or event handlers.
     /// @tparam result_t The result type that is returned from the delegates.
-    template<typename result_t>
+    /// @tparam arguments_t The argument types for any parameters for functions represented by the Delegate.
+    template<typename result_t, typename... arguments_t>
     class Delegate
     {
-        /// @brief delegate_t pointer type
-        using delegate_t = std::function<result_t()>;
         public:
+            /// @brief delegate_t pointer type
+            using delegate_t = std::function<result_t(arguments_t...)>;
             /// @brief Initializes an empty Delegate
             Delegate() = default;
             /// @brief Copy constructor
@@ -38,12 +41,55 @@ namespace jimo
                 m_data->functions = other.m_data->functions;
                 other.m_data->functions.clear();
             }
-            /// @brief Constructs a Delegate object from a function, static class method, class instance and
-            /// instance method, or a Functor.
-            /// @param function 
+            /// @brief Constructs a Delegate object from a function, static class method, or a Functor.
+            /// @param function The function, static class method, or Functor to place as the first function
+            /// in the new Delegate object.
             Delegate(const delegate_t& function)
             {
                 m_data->functions.push_back(function);
+            }
+            /// @brief Constructor that takes const method
+            /// @tparam object_t The type of the class containing the method to store as the delegate.
+            /// @param object The class instance for the method.
+            /// @param method The method to call.
+            template<typename object_t>
+            requires std::is_class_v<object_t>
+            Delegate(const object_t& object, result_t(object_t::*method)() const) noexcept
+            {
+                m_data->functions.push_back(std::bind(method, const_cast<object_t*>(&object)));
+            }
+            /// @brief Constructor that takes a const method with one parameter
+            /// @tparam object_t The type of the class containing the method to store as a delegate.
+            /// @tparam arg1_t The method's parameter type.
+            /// @param object The class instance for the method.
+            /// @param method The method to call.
+            template<typename object_t, typename arg1_t>
+            requires std::is_class_v<object_t>
+            Delegate(const object_t& object, result_t(object_t::*method)(arg1_t) const) noexcept
+            {
+                m_data->functions.push_back(std::bind(method, const_cast<object_t*>(&object),
+                    std::placeholders::_1));
+            }
+
+            /// @brief Constructor that takes a non-const method
+            /// @tparam object_t The type of the class containing the method to store as the delegate.
+            /// @param object The class instance for the method.
+            /// @param method The method to call.
+            template<typename object_t>
+            Delegate(const object_t& object, result_t(object_t::*method)()) noexcept
+            {
+                m_data->functions.push_back(std::bind(method, const_cast<object_t*>(&object)));
+            }
+            /// @brief Constructor that takes a non-const method with one parameter
+            /// @tparam object_t The type of the class containing the method to store as a delegate
+            /// @tparam arg_t The method's parameter type
+            /// @param object The class instance for the method.
+            /// @param method The method to call.
+            template<typename object_t, typename arg_t>
+            Delegate(const object_t& object, result_t(object_t::*method)(arg_t)) noexcept
+            {
+                m_data->functions.push_back(std::bind(method, const_cast<object_t*>(&object),
+                    std::placeholders::_1));
             }
             /// @brief Copy equals operator
             /// @param other The Delegate object to copy
@@ -69,7 +115,7 @@ namespace jimo
             /// @param function The function to add.
             /// @return The Delegate object (this) that contains the functions that were in
             /// the original Delegate plus the function specified by the parameter.
-            Delegate operator +=(delegate_t function)
+            Delegate& operator +=(delegate_t function)
             {
                 combine(function);
                 return *this;
@@ -85,23 +131,23 @@ namespace jimo
             }
             /// @brief Invokes the functions in the current Delegate object.
             /// @return The value returned from executing the last function in the Delegate object.
-            result_t operator ()() const
+            result_t operator ()(arguments_t... args) const
             {
                 if (m_data->functions.empty() && !std::is_void_v<result_t>)
                 {
-                    return result_t();
+                    return result_t(args...);
                 }
                 for (size_t index = 0; index < m_data->functions.size() - 1; ++index)
                 {
-                    m_data->functions[index]();
+                    m_data->functions[index](args...);
                 }
                 if (std::is_void_v<result_t>)
                 {
-                    m_data->functions[m_data->functions.size() -1]();
+                    m_data->functions[m_data->functions.size() -1](args...);
                 }
                 else
                 {
-                    return m_data->functions[m_data->functions.size() -1]();
+                    return m_data->functions[m_data->functions.size() -1](args...);
                 }
             }
         private:
@@ -113,7 +159,6 @@ namespace jimo
             {
                 m_data->functions.push_back(function);
             }
-
             struct data
             {
                 std::vector<delegate_t> functions;
