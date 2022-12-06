@@ -96,9 +96,18 @@ TEST(DelegateTests, TestMethodDelegate)
             }
             int addTwo(int x) const noexcept { return x + 2; }
             int anotherAddTwo(int x) noexcept { return x + 2; }
+            int addTwoNumbers(int x, int y) const noexcept { return x + y; }
+            int anotherAddTwoNumbers(int x, int y) noexcept { return x + y; }
+            float addFloatAndInts(float x, int y, int z) const noexcept { return x + y + z; }
+            float anotherAddFloatAndInts(float x, int y, int z) noexcept { return x + y + z; }
+            float addFourFloats(float a, float b, float c, float d) const noexcept { return a + b + c + d; }
+            float add4Floats(float a, float b, float c, float d) noexcept { return a + b + c + d; }
+            int addFiveInts(int a, int b, int c, int d, int e) const noexcept { return a + b + c + d + e; }
+            int add5Ints(int a, int b, int c, int d, int e) noexcept { return a + b + c + d + e; }
+
         private:
             int m_value = 42;
-            int m_value2 = 14;
+            int m_value2 = 14; 
     };
     Object object;
 
@@ -106,12 +115,24 @@ TEST(DelegateTests, TestMethodDelegate)
     Delegate<int> delegate2(object, &Object::value2);
     Delegate<int, int> delegate3(object, &Object::addTwo);
     Delegate<int, int> delegate4(object, &Object::anotherAddTwo);
-    int value = delegate();
-    int value2 = delegate2();
-    int xPlusTwo = delegate3(5);
-    int anotherXPlusTwo = delegate4(16);
-    ASSERT_EQ(42, value);
-    ASSERT_EQ(14, value2);
-    ASSERT_EQ(7, xPlusTwo);
-    ASSERT_EQ(18, anotherXPlusTwo);
+    Delegate<int, int, int> delegate5(object, &Object::addTwoNumbers);
+    Delegate<int, int, int> delegate6(object, &Object::anotherAddTwoNumbers);
+    Delegate<float, float, int, int> delegate7(object, &Object::addFloatAndInts);
+    Delegate<float, float, int, int> delegate8(object, &Object::anotherAddFloatAndInts);
+    Delegate<float, float, float, float, float> delegate9(object, &Object::addFourFloats);
+    Delegate<float, float, float, float, float> delegate10(object, &Object::add4Floats);
+    Delegate<int, int, int, int, int, int> delegate11(object, &Object::addFiveInts);
+    Delegate<int, int, int, int, int, int> delegate12(object, &Object::add5Ints);
+    ASSERT_EQ(42, delegate());
+    ASSERT_EQ(14, delegate2());
+    ASSERT_EQ(7, delegate3(5));
+    ASSERT_EQ(18, delegate4(16));
+    ASSERT_EQ(8, delegate5(5, 3));
+    ASSERT_EQ(25, delegate6(12, 13));
+    ASSERT_EQ(32.f, delegate7(25.f, 4, 3));
+    ASSERT_EQ(19.f, delegate8(9.f, 6, 4));
+    ASSERT_EQ(7.0f, delegate9(3.0f, 2.0f, 5.0f, -3.0f));
+    ASSERT_EQ(11.0f, delegate10(4.0f, 8.0f, 5.0f, -6.0f));
+    ASSERT_EQ(2, delegate11(3, 2, 5, -14, 6));
+    ASSERT_EQ(3, delegate12(6, 3, -10, -3, 7));
 }

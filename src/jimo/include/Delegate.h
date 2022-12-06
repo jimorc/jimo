@@ -48,7 +48,7 @@ namespace jimo
             {
                 m_data->functions.push_back(function);
             }
-            /// @brief Constructor that takes const method
+            /// @brief Constructor that takes const method with no parameters
             /// @tparam object_t The type of the class containing the method to store as the delegate.
             /// @param object The class instance for the method.
             /// @param method The method to call.
@@ -70,8 +70,71 @@ namespace jimo
                 m_data->functions.push_back(std::bind(method, const_cast<object_t*>(&object),
                     std::placeholders::_1));
             }
-
-            /// @brief Constructor that takes a non-const method
+            /// @brief Constructor that takes a const method with two parameters
+            /// @tparam object_t The type of the class containing the method to store as a delegate.
+            /// @tparam arg1_t The method's first parameter type.
+            /// @tparam arg2_t The method's second parameter type.
+            /// @param object The class instance for the method.
+            /// @param method The method to call.
+            template<typename object_t, typename arg1_t, typename arg2_t>
+            requires std::is_class_v<object_t>
+            Delegate(const object_t& object, result_t(object_t::*method)(arg1_t, arg2_t) const) noexcept
+            {
+                m_data->functions.push_back(std::bind(method, const_cast<object_t*>(&object),
+                    std::placeholders::_1, std::placeholders::_2));
+            }
+            /// @brief Constructor that takes a const method with three parameters
+            /// @tparam object_t The type of the class containing the method to store as a delegate.
+            /// @tparam arg1_t The method's first parameter type.
+            /// @tparam arg2_t The method's second parameter type.
+            /// @tparam arg3_t The method's third parameter type.
+            /// @param object The class instance for the method.
+            /// @param method The method to call.
+            template<typename object_t, typename arg1_t, typename arg2_t, typename arg3_t>
+            requires std::is_class_v<object_t>
+            Delegate(const object_t& object, result_t(object_t::*method)(arg1_t, arg2_t, arg3_t) const) noexcept
+            {
+                m_data->functions.push_back(std::bind(method, const_cast<object_t*>(&object),
+                    std::placeholders::_1, std::placeholders::_2, std::placeholders::_3));
+            }
+            /// @brief Constructor that takes a const method with four parameters
+            /// @tparam object_t The type of the class containing the method to store as a delegate.
+            /// @tparam arg1_t The method's first parameter type.
+            /// @tparam arg2_t The method's second parameter type.
+            /// @tparam arg3_t The method's third parameter type.
+            /// @tparam arg4_t The method's fourth parameter type.
+            /// @param object The class instance for the method.
+            /// @param method The method to call.
+            template<typename object_t, typename arg1_t, typename arg2_t, typename arg3_t,
+                typename arg4_t>
+            requires std::is_class_v<object_t>
+            Delegate(const object_t& object, result_t(object_t::*method)(arg1_t, arg2_t, arg3_t,
+                arg4_t) const) noexcept
+            {
+                m_data->functions.push_back(std::bind(method, const_cast<object_t*>(&object),
+                    std::placeholders::_1, std::placeholders::_2, std::placeholders::_3,
+                    std::placeholders::_4));
+            }
+            /// @brief Constructor that takes a const method with five parameters
+            /// @tparam object_t The type of the class containing the method to store as a delegate.
+            /// @tparam arg1_t The method's first parameter type.
+            /// @tparam arg2_t The method's second parameter type.
+            /// @tparam arg3_t The method's third parameter type.
+            /// @tparam arg4_t The method's fourth parameter type.
+            /// @tparam arg5_t The method's fifth parameter type.
+            /// @param object The class instance for the method.
+            /// @param method The method to call.
+            template<typename object_t, typename arg1_t, typename arg2_t, typename arg3_t,
+                typename arg4_t, typename arg5_t>
+            requires std::is_class_v<object_t>
+            Delegate(const object_t& object, result_t(object_t::*method)(arg1_t, arg2_t, arg3_t,
+                arg4_t, arg5_t) const) noexcept
+            {
+                m_data->functions.push_back(std::bind(method, const_cast<object_t*>(&object),
+                    std::placeholders::_1, std::placeholders::_2, std::placeholders::_3,
+                    std::placeholders::_4, std::placeholders::_5));
+            }
+            /// @brief Constructor that takes a non-const method with no parameters
             /// @tparam object_t The type of the class containing the method to store as the delegate.
             /// @param object The class instance for the method.
             /// @param method The method to call.
@@ -85,11 +148,75 @@ namespace jimo
             /// @tparam arg_t The method's parameter type
             /// @param object The class instance for the method.
             /// @param method The method to call.
-            template<typename object_t, typename arg_t>
-            Delegate(const object_t& object, result_t(object_t::*method)(arg_t)) noexcept
+            template<typename object_t, typename arg1_t>
+            Delegate(const object_t& object, result_t(object_t::*method)(arg1_t)) noexcept
             {
                 m_data->functions.push_back(std::bind(method, const_cast<object_t*>(&object),
                     std::placeholders::_1));
+            }
+            /// @brief Constructor that takes a non-const method with two parameters
+            /// @tparam object_t The type of the class containing the method to store as a delegate.
+            /// @tparam arg1_t The method's first parameter type.
+            /// @tparam arg2_t The method's second parameter type.
+            /// @param object The class instance for the method.
+            /// @param method The method to call.
+            template<typename object_t, typename arg1_t, typename arg2_t>
+            requires std::is_class_v<object_t>
+            Delegate(const object_t& object, result_t(object_t::*method)(arg1_t, arg2_t)) noexcept
+            {
+                m_data->functions.push_back(std::bind(method, const_cast<object_t*>(&object),
+                    std::placeholders::_1, std::placeholders::_2));
+            }
+            /// @brief Constructor that takes a non-const method with three parameters
+            /// @tparam object_t The type of the class containing the method to store as a delegate.
+            /// @tparam arg1_t The type of the method's first parameter.
+            /// @tparam arg2_t The type of the method's second parameter.
+            /// @tparam arg3_t The type of the method's third parameter.
+            /// @param object The class instance for the method.
+            /// @param method The method to call.
+            template<typename object_t, typename arg1_t, typename arg2_t, typename arg3_t>
+            requires std::is_class_v<object_t>
+            Delegate(const object_t& object, result_t(object_t::*method)(arg1_t, arg2_t, arg3_t)) noexcept
+            {
+                m_data->functions.push_back(std::bind(method, const_cast<object_t*>(&object),
+                    std::placeholders::_1, std::placeholders::_2, std::placeholders::_3));
+            }
+            /// @brief Constructor that takes a non-const method with four parameters
+            /// @tparam object_t The type of the class containing the method to store as a delegate.
+            /// @tparam arg1_t The type of the method's first parameter.
+            /// @tparam arg2_t The type of the method's second parameter.
+            /// @tparam arg3_t The type of the method's third parameter.
+            /// @tparam arg4_t The type of the method's fourth parameter
+            /// @param object The class instance for the method.
+            /// @param method The method to call.
+            template<typename object_t, typename arg1_t, typename arg2_t, typename arg3_t,
+                typename arg4_t>
+            requires std::is_class_v<object_t>
+            Delegate(const object_t& object, result_t(object_t::*method)(arg1_t, arg2_t, arg3_t, 
+                arg4_t)) noexcept
+            {
+                m_data->functions.push_back(std::bind(method, const_cast<object_t*>(&object),
+                    std::placeholders::_1, std::placeholders::_2, std::placeholders::_3,
+                    std::placeholders::_4));
+            }
+            /// @brief Constructor that takes a non-const method with five parameters
+            /// @tparam object_t The type of the class containing the method to store as a delegate.
+            /// @tparam arg1_t The type of the method's first parameter.
+            /// @tparam arg2_t The type of the method's second parameter.
+            /// @tparam arg3_t The type of the method's third parameter.
+            /// @tparam arg4_t The type of the method's fourth parameter.
+            /// @tparam arg5_t The type of the method's fifth parameter.
+            /// @param object The class instance for the method.
+            /// @param method The method to call.
+            template<typename object_t, typename arg1_t, typename arg2_t, typename arg3_t,
+                typename arg4_t, typename arg5_t>
+            requires std::is_class_v<object_t>
+            Delegate(const object_t& object, result_t(object_t::*method)(arg1_t, arg2_t, arg3_t, 
+                arg4_t, arg5_t)) noexcept
+            {
+                m_data->functions.push_back(std::bind(method, const_cast<object_t*>(&object),
+                    std::placeholders::_1, std::placeholders::_2, std::placeholders::_3,
+                    std::placeholders::_4, std::placeholders::_5));
             }
             /// @brief Copy equals operator
             /// @param other The Delegate object to copy
@@ -133,9 +260,9 @@ namespace jimo
             /// @return The value returned from executing the last function in the Delegate object.
             result_t operator ()(arguments_t... args) const
             {
-                if (m_data->functions.empty() && !std::is_void_v<result_t>)
+                if (m_data->functions.empty())
                 {
-                    return result_t(args...);
+                    return result_t();
                 }
                 for (size_t index = 0; index < m_data->functions.size() - 1; ++index)
                 {
