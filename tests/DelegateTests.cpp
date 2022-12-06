@@ -45,11 +45,19 @@ TEST(DelegateTests, TestMoveEquals)
 
 TEST(DelegateTests, TestDelegatePlusEquals)
 {
+    class Object
+    {
+        public:
+            static int addTwo(int x) noexcept { return x + 2; }
+    };
     Delegate<int> delegate{ func };
     Delegate<int, int> delegate3( func2 );
     Delegate<int> delegate2;
     delegate2 += delegate;
+    delegate3 += &Object::addTwo;
     ASSERT_EQ(1, delegate2.size());
+    ASSERT_EQ(2, delegate3.size());
+    ASSERT_EQ(6, delegate3(4));
 }
 
 TEST(DelegateTests, TestFunctionPlusEquals)
@@ -68,14 +76,21 @@ TEST(DelegateTests, TestExecute)
     {
         int one;
         int two;
+        int three;
+        void setThree(int x)
+        {
+            three = x;
+        }
     };
 
     Data data;
-    Delegate<void> delegate([&data](){ data.one = 42; });
-    delegate += [&data](){ data.two = 14; };
-    delegate();
+    Delegate<void, int> delegate([&data](int) noexcept { data.one = 42; });
+    delegate += [&data](int) noexcept { data.two = 14; };
+    delegate += Delegate<void, int>(data, &Data::setThree);
+    delegate(4);
     ASSERT_EQ(42, data.one);
     ASSERT_EQ(14, data.two);
+    ASSERT_EQ(4, data.three);
 
     Delegate<int> delegate2{ func };
     ASSERT_EQ(1, delegate2());
