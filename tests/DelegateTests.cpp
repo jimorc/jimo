@@ -168,3 +168,13 @@ TEST(DelegateTests, TestFunctorsAdd)
 
     ASSERT_EQ(7, delegate(4));
 }
+
+TEST(DelegateTests, TestClear)
+{
+    Delegate<void> delegate([](){ /* do something */ });
+    delegate += [](){ /* do something else */ };
+    EXPECT_EQ(2, delegate.size());
+
+    delegate.clear();
+    ASSERT_EQ(0, delegate.size());
+}

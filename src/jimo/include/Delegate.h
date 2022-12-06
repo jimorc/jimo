@@ -235,6 +235,12 @@ namespace jimo
                 other.m_data->functions.clear();
                 return *this;
             }
+            /// @brief Remove all functions from the delegate
+            void clear()
+            {
+                m_data->functions.clear();
+            }
+
             /// @brief Retrieve the number of functions in the Delegate object
             /// @return The number of functions
             size_t size() { return m_data->functions.size(); }
