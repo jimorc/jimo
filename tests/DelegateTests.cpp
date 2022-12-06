@@ -151,3 +151,20 @@ TEST(DelegateTests, TestMethodDelegate)
     ASSERT_EQ(2, delegate11(3, 2, 5, -14, 6));
     ASSERT_EQ(3, delegate12(6, 3, -10, -3, 7));
 }
+
+TEST(DelegateTests, TestFunctorsAdd)
+{
+    class AddThreeFunctor
+    {
+        public:
+            int operator ()(int x)
+            {
+                return x + 3;
+            }
+    };
+    AddThreeFunctor addThree;
+    Delegate<int, int> delegate(addThree);
+    delegate += addThree;
+
+    ASSERT_EQ(7, delegate(4));
+}
