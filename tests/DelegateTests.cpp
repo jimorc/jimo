@@ -178,3 +178,10 @@ TEST(DelegateTests, TestClear)
     delegate.clear();
     ASSERT_EQ(0, delegate.size());
 }
+
+TEST(DelegateTests, TestInvoke)
+{
+    Delegate<int, int>delegate([](int x){ return x + 4; });
+    delegate += [](int x){ return x * x; };
+    ASSERT_EQ(9, delegate(3));
+}

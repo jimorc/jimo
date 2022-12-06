@@ -240,7 +240,13 @@ namespace jimo
             {
                 m_data->functions.clear();
             }
-
+            /// @brief Invoke the methods represented by the current delegate.
+            /// @param ...args The parameters to pass to each method.
+            /// @return The return value from the last method call.
+            result_t invoke(arguments_t... args) const
+            {
+                return operator ()(args...);
+            }
             /// @brief Retrieve the number of functions in the Delegate object
             /// @return The number of functions
             size_t size() { return m_data->functions.size(); }
