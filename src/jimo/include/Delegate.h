@@ -240,6 +240,12 @@ namespace jimo
             {
                 m_data->functions.clear();
             }
+            /// @brief Return if the delegate is empty.
+            /// @return true if delegate is empty, false otherwise.
+            bool empty() const noexcept
+            {
+                return m_data->functions.empty();
+            }
             /// @brief Invoke the methods represented by the current delegate.
             /// @param ...args The parameters to pass to each method.
             /// @return The return value from the last method call.

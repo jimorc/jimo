@@ -185,3 +185,11 @@ TEST(DelegateTests, TestInvoke)
     delegate += [](int x){ return x * x; };
     ASSERT_EQ(9, delegate(3));
 }
+
+TEST(DelegateTests, TestEmpty)
+{
+    Delegate<int, int> delegate;
+    ASSERT_TRUE(delegate.empty());
+    delegate += [](int x) -> int { return x; };
+    ASSERT_FALSE(delegate.empty());
+}
