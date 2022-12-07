@@ -193,3 +193,26 @@ TEST(DelegateTests, TestEmpty)
     delegate += [](int x) -> int { return x; };
     ASSERT_FALSE(delegate.empty());
 }
+
+TEST(DelegateTests, TestEqual)
+{
+    Delegate<int> delegate1;
+    Delegate<int> delegate2;
+    ASSERT_TRUE(delegate1 == delegate2);
+    delegate1 += func;
+    Delegate<int> delegate3 { func };
+    ASSERT_TRUE(delegate1 == delegate3);
+    ASSERT_FALSE(delegate1 == delegate2);
+}
+
+TEST(DelegateTests, TesNotEqual)
+{
+    Delegate<int> delegate1;
+    Delegate<int> delegate2;
+    ASSERT_FALSE(delegate1 != delegate2);
+    delegate1 += func;
+    Delegate<int> delegate3 { func };
+    ASSERT_FALSE(delegate1 != delegate3);
+    ASSERT_TRUE(delegate1 != delegate2);
+}
+

@@ -12,8 +12,6 @@
 
 namespace jimo
 {
-
-
     /// @brief Represents a delegate object, which is a data structure that refers to
     /// functions, static class methods, 
     /// class instances and instance methods, or Functors 
@@ -253,6 +251,25 @@ namespace jimo
             {
                 return operator ()(args...);
             }
+            bool operator ==(const Delegate& other)
+            {
+                if (size() != const_cast<Delegate&>(other).size())
+                {
+                    return false;
+                }
+                for (size_t index = 0; index < m_data->functions.size(); ++index)
+                {
+                    if (!are_equal(m_data->functions[index], other.m_data->functions[index]))
+                    {
+                        return false;
+                    }
+                }
+                return true;
+            }
+            bool operator !=(const Delegate& other)
+            {
+                return !operator ==(other);
+            }
             /// @brief Retrieve the number of functions in the Delegate object
             /// @return The number of functions
             size_t size() { return m_data->functions.size(); }
@@ -303,6 +320,10 @@ namespace jimo
             void combine(const delegate_t& function)
             {
                 m_data->functions.push_back(function);
+            }
+            static bool are_equal(delegate_t& left, delegate_t& right)
+            {
+                return left.template target<delegate_t>() == right.template target<delegate_t>();
             }
             struct data
             {
