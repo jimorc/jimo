@@ -71,15 +71,16 @@ using lldb on the command line.
 As an alternative to building on the command line, you can use an IDE. For that, you will have to follow the IDE specific instructions for using cmake to create project files. You must still build the documentation from a terminal.
 
 ### Windows
-The following 
-1. Install Visual Studio (latest version). Community edition is sufficient. Select and install:
+The following is the minimum required to build the jimo library on Windows 10/11 systems:
+1. Install Visual Studio (latest version). Community edition is sufficient. Select:
    * Desktop development with C++
+   * In the Installation details section, select C++ Modules for v\<xxx\> build tools as appropriate for whatever architecture you are building
+for. If in doubt, install both the x86/64 and arch64 components.
+   * Select either *Install while downloading* or *Download all, then install* as you deem appropriate, then click on the button.
+  
+1. Install Doxygen from the [Doxygen Download Page](https://doxygen.nl/download.html)
 
-2. Install CMake from the [CMake Download Page](https://cmake.org/download/).
-
-3. Install Doxygen from the [Doxygen Download Page](https://doxygen.nl/download.html)
-
-3. Open a command prompt and enter:
+1. Open a command prompt and enter:
 ```cmd
 cd <your-root-projects-directory>
 git clone https://github.com/jimorc/jimo.git
