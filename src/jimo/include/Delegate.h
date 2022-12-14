@@ -331,7 +331,10 @@ namespace jimo
             }
             static bool are_equal(function_t& left, function_t& right)
             {
-                return left.template target<function_t>() == right.template target<function_t>();
+                return left.target_type() == right.target_type() && 
+                    (left.template target<result_t(*)(arguments_t...)>() == right.template target<result_t(*)(arguments_t...)>()
+                    || *left.template target<result_t(*)(arguments_t...)>() == *right.template target<result_t(*)(arguments_t...)>());
+//                return left.template target<function_t>() == right.template target<function_t>();
             }
             struct data
             {

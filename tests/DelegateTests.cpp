@@ -7,6 +7,19 @@ using namespace jimo;
 
 int func() { return 1; };
 int func2(int x) { return x + 2; }
+class AddThreeFunctor
+{
+    public:
+        int operator ()(int x)
+        {
+            return x + 3;
+        }
+};
+AddThreeFunctor addThree;
+int func3(int x)
+{
+    return addThree(x);
+}
 
 TEST(DelegateTests, TestCopyConstructor)
 {
@@ -203,6 +216,12 @@ TEST(DelegateTests, TestEqual)
     Delegate<int> delegate3 { func };
     ASSERT_TRUE(delegate1 == delegate3);
     ASSERT_FALSE(delegate1 == delegate2);
+    Delegate<int, int> delegate4;
+    Delegate<int, int> delegate5(addThree);
+    Delegate<int, int> delegate6(func3);
+    delegate4 += addThree;
+    ASSERT_TRUE(delegate4 == delegate5);
+    ASSERT_FALSE(delegate4 == delegate6);
 }
 
 TEST(DelegateTests, TesNotEqual)
@@ -214,5 +233,11 @@ TEST(DelegateTests, TesNotEqual)
     Delegate<int> delegate3 { func };
     ASSERT_FALSE(delegate1 != delegate3);
     ASSERT_TRUE(delegate1 != delegate2);
+    Delegate<int, int> delegate4;
+    Delegate<int, int> delegate5(addThree);
+    Delegate<int, int> delegate6(func3);
+    delegate4 += addThree;
+    ASSERT_FALSE(delegate4 != delegate5);
+    ASSERT_TRUE(delegate4 != delegate6);
 }
 
