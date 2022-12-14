@@ -251,6 +251,10 @@ namespace jimo
             {
                 return operator ()(args...);
             }
+            /// @brief Compare two Delegates for equality
+            /// @param other The second Delegate object to compare to this
+            /// @return true if other contains the same delegates in the same order,
+            /// false otherwise.
             bool operator ==(const Delegate& other)
             {
                 if (size() != const_cast<Delegate&>(other).size())
@@ -266,6 +270,10 @@ namespace jimo
                 }
                 return true;
             }
+            /// @brief Compares two Delegates for inequality
+            /// @param other The second Delegate object to compare to this
+            /// @return Return true if the Delegate objects do not contain the same delegates
+            /// in the same order, otherwise false.
             bool operator !=(const Delegate& other)
             {
                 return !operator ==(other);
