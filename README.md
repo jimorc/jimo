@@ -51,9 +51,12 @@ As an alternative to building on the command line, you can use an IDE. For that,
 
 ### Windows
 The following 
-1. Install Visual Studio (latest version). Community edition is sufficient. Select and install:
+1. Install Visual Studio (latest version). Community edition is sufficient. Select:
    * Desktop development with C++
-
+   * In the Installation details section, select C++ Modules for v<xxx> build tools as appropriate for whatever architecture you are building
+for. If in doubt, install both the x86/64 and arch64 components.
+   * Select either <i>Install while downloading</i> or <i>Download all, then install</i> as you deem appropriate, then click on the button.
+  
 2. Install CMake from the [CMake Download Page](https://cmake.org/download/).
 
 3. Install Doxygen from the [Doxygen Download Page](https://doxygen.nl/download.html)
