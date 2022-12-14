@@ -22,8 +22,8 @@ namespace jimo
     class Delegate
     {
         public:
-            /// @brief delegate_t pointer type
-            using delegate_t = std::function<result_t(arguments_t...)>;
+            /// @brief function_t pointer type
+            using function_t = std::function<result_t(arguments_t...)>;
             /// @brief Initializes an empty Delegate
             Delegate() = default;
             /// @brief Copy constructor
@@ -42,7 +42,7 @@ namespace jimo
             /// @brief Constructs a Delegate object from a function, static class method, or a Functor.
             /// @param function The function, static class method, or Functor to place as the first function
             /// in the new Delegate object.
-            Delegate(const delegate_t& function)
+            Delegate(const function_t& function)
             {
                 m_data->functions.push_back(function);
             }
@@ -285,7 +285,7 @@ namespace jimo
             /// @param function The function to add.
             /// @return The Delegate object (this) that contains the functions that were in
             /// the original Delegate plus the function specified by the parameter.
-            Delegate& operator +=(delegate_t function)
+            Delegate& operator +=(function_t function)
             {
                 combine(function);
                 return *this;
@@ -325,17 +325,17 @@ namespace jimo
             {
                 std::ranges::copy(other.m_data->functions, std::back_inserter(m_data->functions));
             }
-            void combine(const delegate_t& function)
+            void combine(const function_t& function)
             {
                 m_data->functions.push_back(function);
             }
-            static bool are_equal(delegate_t& left, delegate_t& right)
+            static bool are_equal(function_t& left, function_t& right)
             {
-                return left.template target<delegate_t>() == right.template target<delegate_t>();
+                return left.template target<function_t>() == right.template target<function_t>();
             }
             struct data
             {
-                std::vector<delegate_t> functions;
+                std::vector<function_t> functions;
             };
             std::shared_ptr<data> m_data = std::make_shared<data>();
     };
