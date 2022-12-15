@@ -46,6 +46,8 @@ TEST(DelegateTests, TestCopyEquals)
     Delegate<int> delegate2 = delegate;
     ASSERT_EQ(1, delegate.size());
     ASSERT_EQ(1, delegate2.size());
+    ASSERT_TRUE(delegate2 == delegate);
+
 }
 
 TEST(DelegateTests, TestMoveEquals)
@@ -224,7 +226,7 @@ TEST(DelegateTests, TestEqual)
     ASSERT_FALSE(delegate4 == delegate6);
 }
 
-TEST(DelegateTests, TesNotEqual)
+TEST(DelegateTests, TestNotEqual)
 {
     Delegate<int> delegate1;
     Delegate<int> delegate2;
@@ -241,3 +243,20 @@ TEST(DelegateTests, TesNotEqual)
     ASSERT_TRUE(delegate4 != delegate6);
 }
 
+TEST(DelegateTests, TestRemoveDelegate)
+{
+    Delegate<int, int> delegate1(func2);
+    Delegate<int, int> delegate2 { func2 };
+    delegate2 += addThree;
+    delegate2 += func2;
+    Delegate<int, int> delegate3 = jimo::Delegate<int, int>::remove(delegate2, delegate1);
+    ASSERT_EQ(1, delegate3.size());
+    ASSERT_EQ(1, delegate1.size());
+    ASSERT_EQ(3, delegate2.size());
+    ASSERT_EQ(4, delegate3(1));
+    delegate2 += [](int x) { return x + 5; };
+    Delegate<int, int> delegate4([](int x) { return x + 5; });
+    delegate3 = jimo::Delegate<int, int>::remove(delegate2, delegate4);
+    // lambda not deleted because it does not have same address. 
+    ASSERT_EQ(4, delegate3.size());
+}

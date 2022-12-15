@@ -28,13 +28,13 @@ namespace jimo
             Delegate() = default;
             /// @brief Copy constructor
             /// @param other The Delegate object to copy.
-            Delegate(const Delegate& other)
+            Delegate(const Delegate& other) noexcept
             {
                 m_data->functions = other.m_data->functions;
             }
             /// @brief Move constructor
             /// @param other The Delegate object to move.
-            Delegate(Delegate&& other)
+            Delegate(Delegate&& other) noexcept
             {
                 m_data->functions = other.m_data->functions;
                 other.m_data->functions.clear();
@@ -251,6 +251,21 @@ namespace jimo
             {
                 return operator ()(args...);
             }
+            /// @brief Remove all functions in right from the functions in left.
+            /// @param left the Delegate object to remove functions from
+            /// @param right the Delegate object containing the functions to remove
+            /// @return the Delegate object containing the functions contained in left that
+            /// are not in right.
+            static Delegate remove(const Delegate& left, const Delegate& right) noexcept
+            {
+                Delegate result = left;
+                for (const function_t& function : right.m_data->functions)
+                {
+                    std::erase_if(result.m_data->functions,
+                        [&function](function_t& func) -> bool { return are_equal(func, function); });
+                }
+                return result;
+            }
             /// @brief Compare two Delegates for equality
             /// @param other The second Delegate object to compare to this
             /// @return true if other contains the same delegates in the same order,
@@ -321,6 +336,12 @@ namespace jimo
                 }
             }
         private:
+            static bool are_equal(const function_t& left, const function_t& right)
+            {
+                return left.target_type() == right.target_type() && 
+                    (left.template target<result_t(*)(arguments_t...)>() == right.template target<result_t(*)(arguments_t...)>()
+                    || *left.template target<result_t(*)(arguments_t...)>() == *right.template target<result_t(*)(arguments_t...)>());
+            }
             void combine(const Delegate& other)
             {
                 std::ranges::copy(other.m_data->functions, std::back_inserter(m_data->functions));
@@ -329,12 +350,20 @@ namespace jimo
             {
                 m_data->functions.push_back(function);
             }
-            static bool are_equal(function_t& left, function_t& right)
+            static typename std::vector<function_t>::const_iterator find(
+                typename std::vector<function_t>::const_iterator begin,
+                typename std::vector<function_t>::const_iterator end, 
+                const function_t& function) noexcept
             {
-                return left.target_type() == right.target_type() && 
-                    (left.template target<result_t(*)(arguments_t...)>() == right.template target<result_t(*)(arguments_t...)>()
-                    || *left.template target<result_t(*)(arguments_t...)>() == *right.template target<result_t(*)(arguments_t...)>());
-//                return left.template target<function_t>() == right.template target<function_t>();
+                for (typename std::vector<function_t>::const_iterator iterator = begin;
+                    iterator != end; ++iterator)
+                {
+                    if(are_equal(*iterator, function))
+                    {
+                        return iterator;
+                    }
+                }
+                return end;
             }
             struct data
             {
