@@ -277,3 +277,18 @@ TEST(DelegateTests, TestRemoveFunction)
     delegate2.remove(addThree);
     ASSERT_EQ(1, delegate2.size());
 }
+
+TEST(DelegateTests, TestMinusEqualsFunction)
+{
+    Delegate<int, int> delegate1(func2);
+    delegate1 += addThree;
+    Delegate<int, int> delegate2;
+    delegate2 += func2;
+    delegate2 += addThree;
+    delegate2 += func2;
+    delegate1 -= addThree;
+    ASSERT_EQ(1, delegate1.size());
+    delegate2 -= func2;
+    ASSERT_EQ(1, delegate2.size());
+    ASSERT_EQ(5, delegate2(2));
+}
