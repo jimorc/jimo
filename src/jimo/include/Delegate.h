@@ -324,6 +324,15 @@ namespace jimo
                 combine(delegate);
                 return *this;
             }
+            /// @brief Remove the function specified by the parameter from this object.
+            /// @param function The function to remove.
+            /// @return The Delegate object (this) that contains the functions that were
+            /// in the original Delegate object minus the function specified by the parameter.
+            Delegate& operator -=(function_t function)
+            {
+                remove(function);
+                return *this;
+            }
             /// @brief Invokes the functions in the current Delegate object.
             /// @return The value returned from executing the last function in the Delegate object.
             result_t operator ()(arguments_t... args) const
