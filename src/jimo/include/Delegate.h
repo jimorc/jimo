@@ -256,25 +256,23 @@ namespace jimo
             /// @param right the Delegate object containing the functions to remove
             /// @return the Delegate object containing the functions contained in left that
             /// are not in right.
-            static Delegate remove(const Delegate& left, const Delegate& right) noexcept
+            Delegate& remove(const Delegate& other) noexcept
             {
-                Delegate result = left;
-                for (const function_t& function : right.m_data->functions)
+                for (const function_t& function : other.m_data->functions)
                 {
-                    result = remove(result, function);
+                    remove(function);
                 }
-                return result;
+                return *this;
             }
             /// @brief Remove the function from vector of functions in the Delegate object
             /// @param delegate The Delegate object the function is to be removed from
             /// @param function The function to remove
             /// @return Delegate object with the function removed.
-            static Delegate remove(const Delegate& delegate, const function_t& function)
+            Delegate& remove(const function_t& function)
             {
-                Delegate result = delegate;
-                std::erase_if(result.m_data->functions,
+                std::erase_if(m_data->functions,
                     [&function](function_t& func) -> bool { return are_equal(func, function); });
-                return result;
+                return *this;
             }
             /// @brief Compare two Delegates for equality
             /// @param other The second Delegate object to compare to this
