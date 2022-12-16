@@ -261,9 +261,19 @@ namespace jimo
                 Delegate result = left;
                 for (const function_t& function : right.m_data->functions)
                 {
-                    std::erase_if(result.m_data->functions,
-                        [&function](function_t& func) -> bool { return are_equal(func, function); });
+                    result = remove(result, function);
                 }
+                return result;
+            }
+            /// @brief Remove the function from vector of functions in the Delegate object
+            /// @param delegate The Delegate object the function is to be removed from
+            /// @param function The function to remove
+            /// @return Delegate object with the function removed.
+            static Delegate remove(const Delegate& delegate, const function_t& function)
+            {
+                Delegate result = delegate;
+                std::erase_if(result.m_data->functions,
+                    [&function](function_t& func) -> bool { return are_equal(func, function); });
                 return result;
             }
             /// @brief Compare two Delegates for equality
@@ -349,21 +359,6 @@ namespace jimo
             void combine(const function_t& function)
             {
                 m_data->functions.push_back(function);
-            }
-            static typename std::vector<function_t>::const_iterator find(
-                typename std::vector<function_t>::const_iterator begin,
-                typename std::vector<function_t>::const_iterator end, 
-                const function_t& function) noexcept
-            {
-                for (typename std::vector<function_t>::const_iterator iterator = begin;
-                    iterator != end; ++iterator)
-                {
-                    if(are_equal(*iterator, function))
-                    {
-                        return iterator;
-                    }
-                }
-                return end;
             }
             struct data
             {

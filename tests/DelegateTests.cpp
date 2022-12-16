@@ -260,3 +260,18 @@ TEST(DelegateTests, TestRemoveDelegate)
     // lambda not deleted because it does not have same address. 
     ASSERT_EQ(4, delegate3.size());
 }
+
+TEST(DelegateTests, TestRemoveFunction)
+{
+    Delegate<int, int> delegate1(func2);
+    Delegate<int, int> delegate2(addThree);
+    delegate1 += func2;
+    delegate2 += func2;
+    delegate2 += addThree;
+    auto delegate3 = Delegate<int, int>::remove(delegate1, addThree);
+    ASSERT_EQ(2, delegate3.size());
+    delegate3 = Delegate<int, int>::remove(delegate1, func2);
+    ASSERT_EQ(0, delegate3.size());
+    delegate3 = Delegate<int, int>::remove(delegate2, addThree);
+    ASSERT_EQ(1, delegate3.size());
+}
