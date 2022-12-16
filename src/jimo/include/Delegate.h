@@ -253,11 +253,11 @@ namespace jimo
             {
                 return operator ()(args...);
             }
-            /// @brief Remove all functions in right from the functions in left.
-            /// @param left the Delegate object to remove functions from
-            /// @param right the Delegate object containing the functions to remove
-            /// @return the Delegate object containing the functions contained in left that
-            /// are not in right.
+            /// @brief Remove all functions in the input Delegate object from the functions 
+            // in this object.
+            /// @param other the Delegate object containing the functions to remove.
+            /// @return the Delegate object containing the functions that are in this, but
+            /// not in other.
             Delegate& remove(const Delegate& other) noexcept
             {
                 for (const function_t& function : other.m_data->functions)
@@ -266,10 +266,10 @@ namespace jimo
                 }
                 return *this;
             }
-            /// @brief Remove the function from vector of functions in the Delegate object
-            /// @param delegate The Delegate object the function is to be removed from
-            /// @param function The function to remove
-            /// @return Delegate object with the function removed.
+            /// @brief Remove the function from this object
+            /// @param function The function to remove.
+            /// @return Delegate object containing functions that are in this instance 
+            /// without function.
             Delegate& remove(const function_t& function)
             {
                 std::erase_if(m_data->functions,
