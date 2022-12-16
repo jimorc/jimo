@@ -216,6 +216,8 @@ namespace jimo
                     std::placeholders::_1, std::placeholders::_2, std::placeholders::_3,
                     std::placeholders::_4, std::placeholders::_5));
             }
+            /// @brief Destructor
+            virtual ~Delegate() = default;
             /// @brief Copy equals operator
             /// @param other The Delegate object to copy
             /// @return Delegate object that contains a copy of the Delegates in the copied object.
