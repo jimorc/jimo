@@ -310,7 +310,7 @@ namespace jimo
             /// @param function The function to add.
             /// @return The Delegate object (this) that contains the functions that were in
             /// the original Delegate plus the function specified by the parameter.
-            Delegate& operator +=(function_t function)
+            Delegate& operator +=(const function_t& function)
             {
                 combine(function);
                 return *this;
