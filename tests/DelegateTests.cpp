@@ -1,9 +1,11 @@
 #include <gtest/gtest.h>
 #include <iostream>
+#include <functional>
 #include "Delegate.h"
 #include "EventArgs.h"
 
 using namespace jimo;
+using namespace std::placeholders;
 
 int func() { return 1; };
 int func2(int x) { return x + 2; }
@@ -280,15 +282,47 @@ TEST(DelegateTests, TestRemoveFunction)
 
 TEST(DelegateTests, TestMinusEqualsFunction)
 {
+    class Object
+    {
+        public:
+            int addFive(int x) { return x + 5; }
+    };
+    Object object;
     Delegate<int, int> delegate1(func2);
     delegate1 += addThree;
+    delegate1 += std::bind(&Object::addFive, object, _1);
     Delegate<int, int> delegate2;
     delegate2 += func2;
     delegate2 += addThree;
     delegate2 += func2;
     delegate1 -= addThree;
-    ASSERT_EQ(1, delegate1.size());
+    ASSERT_EQ(2, delegate1.size());
     delegate2 -= func2;
     ASSERT_EQ(1, delegate2.size());
     ASSERT_EQ(5, delegate2(2));
+    delegate2 -= std::bind(&Object::addFive, object, _1);
+    ASSERT_EQ(1, delegate2.size());
+    ASSERT_EQ(6, delegate2(3));
+
+}
+
+TEST(DelegateTests, TestMinusEqualsDelegate)
+{
+    class Object
+    {
+        public:
+            int addFive(int x) { return x + 5; }
+    };
+    Object object;
+    Delegate<int, int> delegate1(func2);
+    delegate1 += addThree;
+    Delegate<int, int> delegate2;
+    delegate2 += func2;
+    delegate2 += std::bind(&Object::addFive, &object, _1);
+    delegate2 -= delegate1;
+    ASSERT_EQ(1, delegate2.size());
+    delegate2 += func2;
+    delegate1 -= delegate2;
+    ASSERT_EQ(1, delegate1.size());
+    ASSERT_EQ(6, delegate1(3));
 }

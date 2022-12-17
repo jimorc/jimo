@@ -310,7 +310,7 @@ namespace jimo
             /// @param function The function to add.
             /// @return The Delegate object (this) that contains the functions that were in
             /// the original Delegate plus the function specified by the parameter.
-            Delegate& operator +=(const function_t& function)
+            Delegate& operator +=(function_t function)
             {
                 combine(function);
                 return *this;
@@ -331,6 +331,16 @@ namespace jimo
             Delegate& operator -=(const function_t& function)
             {
                 remove(function);
+                return *this;
+            }
+            /// @brief Remove the functions in one Delegate object from this object
+            /// @param delegate The Delegate object containing the funections to remove.
+            /// @return The Delegate object (this) that contains the functions that were
+            /// in the original Delegate minus the functions that are in the object
+            /// specified by the parameter
+            Delegate& operator -=(const Delegate& delegate)
+            {
+                remove(delegate);
                 return *this;
             }
             /// @brief Invokes the functions in the current Delegate object.
