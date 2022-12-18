@@ -316,11 +316,11 @@ TEST(DelegateTests, TestMinusEqualsDelegate)
     Object object;
     Delegate<int, int> delegate1(func2);
     delegate1 += addThree;
-    Delegate<int, int> delegate2;
+    Delegate<int, int> delegate2(object, &Object::addFive);
     delegate2 += func2;
     delegate2 += std::bind(&Object::addFive, &object, _1);
     delegate2 -= delegate1;
-    ASSERT_EQ(1, delegate2.size());
+    ASSERT_EQ(2, delegate2.size());
     delegate2 += func2;
     delegate1 -= delegate2;
     ASSERT_EQ(1, delegate1.size());
