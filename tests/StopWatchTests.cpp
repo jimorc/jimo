@@ -160,7 +160,7 @@ TEST(StopWatchTests, TestGetLapTimesWhenStopWatchIsRunning)
             "Cannot retrieve lap times while stop watch is running");
         return;
     }
-    catch (std::exception& ex)
+    catch (std::exception&)
     {
         FAIL();
     }
@@ -180,7 +180,7 @@ TEST(StopWatchTests, TestGetLapTimesWhenStopWatchNeverRun)
             "Cannot retrieve lap times. Stop watch never ran");
         return;
     }
-    catch (std::exception& ex)
+    catch (std::exception& )
     {
         FAIL();
     }
@@ -222,7 +222,7 @@ TEST(StopWatchTests, TestStopWithoutSavingTimeBeforeStart)
             "StopWithoutSavingTime() being called before stop watch started");
         return;
     }
-    catch (std::exception& ex)
+    catch (std::exception&)
     {
         FAIL();
     }

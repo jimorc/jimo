@@ -60,9 +60,5 @@ namespace jimo
             {
                 return "jimo::EventArgs";
             }
-            /// @brief Provides a value to use with events that do not have event data.
-            /// @remark Pass this value to event handlers that are associated with events that
-            /// do not have data.
-            static const EventArgs empty;
     };
 }

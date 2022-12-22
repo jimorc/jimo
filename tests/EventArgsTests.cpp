@@ -17,21 +17,17 @@ class TestEventArgs : public EventArgs
                 const auto& args = dynamic_cast<const TestEventArgs&>(other);
                 return (m_testData == args.m_testData);
             }
-            catch(const std::bad_cast& e)
+            catch (const std::bad_cast&)
             {
                 return false;
             }
-            
-            const auto& args = dynamic_cast<const TestEventArgs&>(other);
-
-            return std::is_same_v<decltype(*this), decltype(args)>;
         }
-            virtual std::string ToString() const override
-            {
-                std::stringstream ss;
-                ss << "TestEventArgs: " << m_testData;
-                return ss.str();
-            }
+        virtual std::string ToString() const override
+        {
+            std::stringstream ss;
+            ss << "TestEventArgs: " << m_testData;
+            return ss.str();
+        }
     private:
         int m_testData;
 };

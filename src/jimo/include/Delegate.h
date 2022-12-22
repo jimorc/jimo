@@ -283,9 +283,9 @@ namespace jimo
             /// @param other The second Delegate object to compare to this
             /// @return true if other contains the same delegates in the same order,
             /// false otherwise.
-            bool operator ==(const Delegate& other)
+            bool operator ==(const Delegate& other) const noexcept
             {
-                if (size() != const_cast<Delegate&>(other).size())
+                if (const_cast<Delegate&>(*this).size() != const_cast<Delegate&>(other).size())
                 {
                     return false;
                 }

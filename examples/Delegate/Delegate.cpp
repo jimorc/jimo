@@ -16,16 +16,16 @@ struct Data
 class Object
 {
     public:
-        void setA(Data& d, int x, float f) { d.a = x; }
+        void setA(Data& d, int x, float) { d.a = x; }
 };
 
 class AddTwoFunctor
 {
     public:
-        void operator ()(Data& d, int x, float f) { d.b = x + 2; }
+        void operator ()(Data& d, int x, float ) { d.b = x + 2; }
 };
 
-void setD(Data& d, int x, float f) { d.d = f; }
+void setD(Data& d, int , float f) { d.d = f; }
 
 int main()
 {
@@ -46,9 +46,9 @@ int main()
     data.print();
 
     // add a lambda
-    dataFunctions += [](Data& data, int x, float f) -> void { data.c = x; };
+    dataFunctions += [](Data& data, int x, float) -> void { data.c = x; };
     // remove the functor
     dataFunctions -= addTwo;
-    dataFunctions.invoke(data, 6, -1.3);
+    dataFunctions.invoke(data, 6, -1.3f);
     data.print();
 }

@@ -12,11 +12,14 @@ target_link_libraries(GTest::GTest INTERFACE gtest_main)
 add_executable(jimoTest 
   DelegateTests.cpp
   EventArgsTests.cpp
+  EventTests.cpp
+  ObjectTests.cpp
   StopWatchTests.cpp
-  StopWatchExceptionTests.cpp)
+  StopWatchExceptionTests.cpp
+  )
 
 target_link_libraries(jimoTest
- PRIVATE
+  PUBLIC
   GTest::GTest
   jimo)
 

@@ -179,7 +179,7 @@ TEST(DelegateTests, TestFunctorsAdd)
                 return x + 3;
             }
     };
-    AddThreeFunctor addThree;
+//    AddThreeFunctor addThree;
     Delegate<int, int> delegate(addThree);
     delegate += addThree;
 
@@ -291,12 +291,14 @@ TEST(DelegateTests, TestMinusEqualsFunction)
     Delegate<int, int> delegate1(func2);
     delegate1 += addThree;
     delegate1 += std::bind(&Object::addFive, object, _1);
+    ASSERT_EQ(3, delegate1.size());
     Delegate<int, int> delegate2;
     delegate2 += func2;
     delegate2 += addThree;
     delegate2 += func2;
     delegate1 -= addThree;
-    ASSERT_EQ(2, delegate1.size());
+    delegate1 -= std::bind(&Object::addFive, object, _1);    
+    ASSERT_EQ(1, delegate1.size());
     delegate2 -= func2;
     ASSERT_EQ(1, delegate2.size());
     ASSERT_EQ(5, delegate2(2));
