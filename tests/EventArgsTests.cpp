@@ -1,3 +1,7 @@
+/// @file EventArgsTests.cpp
+/// @author Jim Orcheson
+/// @copyright 2022 Jim Orcheson. Use dictated by MIT License.
+
 #include "EventArgs.h"
 #include <gtest/gtest.h>
 #include <sstream>

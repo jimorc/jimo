@@ -1,3 +1,8 @@
+/// @file EventHandler.h
+/// @author Jim Orcheson
+/// @copyright 2022 Jim Orcheson. Use dictated by MIT License.
+
+#pragma once
 #include "Delegate.h"
 #include "Object.h"
 

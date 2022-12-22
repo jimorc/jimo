@@ -1,3 +1,7 @@
+/// @file EventTests.cpp
+/// @author Jim Orcheson
+/// @copyright 2022 Jim Orcheson. Use dictated by MIT License.
+
 #include <gtest/gtest.h>
 #include "Event.h"
 #include "EventHandler.h"
