@@ -10,14 +10,23 @@ namespace jimo
 {
     /// @class EventArgs
     /// @brief Represents the base class for classes that contain event data.
-    ///
-    /// Also provides a value to use for events that do not include event data.
+    /// @remark This class serves as the base class for all classes that represent event
+    /// data. For example, the jimo::timing::TickEventArgs class derives from EventArgs and
+    /// is used to hold information whenever a Timer object tick event fires.
+    /// @remark To create a
+    /// custom event data class, create a class that derives from EventArgs and provides
+    /// the properties to store the necessary data. The name of the custom class should end
+    /// with <code>EventArgs</code>.
+    /// @remark To pass an object that does not contain any data, pass an EventArgs object.
+    /// @remark The Event.cpp example program uses both a derived NumberEventArgs class
+    /// object and an empty EventArgs object.
+    /// @example Event/Event.cpp
     class EventArgs
     {
         public:
-            /// @brief Default constructor
-            /// @remark This constructor should be called from all derived EventArgs classes.
-            /// @remark It is also called directly in the empty static EventArgs object.
+            /// @brief Initialize new instance of the EventArgs class.
+            /// @remark Use an object of this type when you want to pass an object that
+            /// contains no data.
             EventArgs() = default;
             /// @brief Copy constructor
             /// @param other the EventArgs object to copy

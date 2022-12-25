@@ -15,6 +15,9 @@ namespace jimo
     /// @tparam sender_t The type of the object that invokes the handler.
     /// @tparam eventArgs_t The type of the event arguments passed to the event handler.
     /// The type must be either jimo::EventArgs, or a type that is derived from EventArgs.
+    ///
+    /// Here is a program that illustrates the use of the Event class:
+    /// \include Event/Event.cpp
     template<typename sender_t, typename eventArgs_t>
     requires std::derived_from<eventArgs_t, EventArgs>
     class Event : public EventHandler<sender_t, eventArgs_t>
