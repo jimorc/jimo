@@ -1,1 +1,2 @@
 add_subdirectory(Event1)
+add_subdirectory(Event2)

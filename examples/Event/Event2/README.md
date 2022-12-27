@@ -4,7 +4,7 @@ demonstrates the use of jimo::Event class.
 
 ## Sources
 
-* [Event1.cpp](Event1.cpp)
+* [Event2.cpp](Event2.cpp)
 * [CMakeLists.txt](CMakeLists.txt)
 
 ## Build and Run
@@ -16,7 +16,7 @@ Open "Command Prompt" or "Terminal". Navigate to the folder that contains the ex
 and type the following:
 
 ```bash
-./Event1
+./Event22
 ```
 
 ## Output
