@@ -16,7 +16,7 @@ Open "Command Prompt" or "Terminal". Navigate to the folder that contains the ex
 and type the following:
 
 ```bash
-./Event22
+./Event2
 ```
 
 ## Output
@@ -24,10 +24,16 @@ and type the following:
 The following is sample output from the program.
 
 ```
-From running event2
-All 4 values have been set:
-ObjectWithEvents: 1, 8, 4, 16
-From running event2
-Only the first and third values are set after two std::functions are removed from event1
-ObjectWithEvents: 4, 8, 7, 16
+sub1 received this message: 1
+sub2 received this message: 1
+sub1 received generic message
+sub2 received generic message
+sub1 received this message: 2
+sub2 received this message: 2
+sub1 received generic message
+sub2 received generic message
+sub1 received this message: 3
+sub2 received this message: 3
+sub1 received generic message
+sub2 received generic message
 ```
