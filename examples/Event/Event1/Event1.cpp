@@ -54,7 +54,7 @@ class ObjectWithEvents : public Object
         int m_value3;
         int m_value4;
 };
-class AnotherObject : public Object
+class AnotherObject
 {
     public:
         auto setValue4(Object& sender, const NumberEventArgs& e) noexcept
@@ -81,8 +81,8 @@ int main()
     AnotherObject anObject;
     owe.event1 += func;
     owe.event1 += ftor;
-    owe.event1 += std::bind(&ObjectWithEvents::setValue1, &owe, _1, _2);
-    owe.event1 += std::bind(&AnotherObject::setValue4, &anObject, _1, _2);
+    owe.event1 += { owe, &ObjectWithEvents::setValue1 };
+    owe.event1 += { anObject, &AnotherObject::setValue4 };
     owe.event2 += [](Object&, const EventArgs&) { std::cout << "From running event2\n"; };
 
     owe.onEvent2(EventArgs());
@@ -92,7 +92,7 @@ int main()
     // remove setting of second value
     owe.event1 -= ftor;
     // remove setting of fourth value
-    owe.event1 -= std::bind(&AnotherObject::setValue4, &anObject, _1, _2);
+    owe.event1 -= { anObject, &AnotherObject::setValue4 };
     owe.onEvent2(EventArgs());
     // only first and third values will be changed
     owe.onEvent1(NumberEventArgs(7));   
