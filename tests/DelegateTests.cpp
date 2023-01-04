@@ -249,41 +249,6 @@ TEST(DelegateTests, TestNotEqual)
     ASSERT_TRUE(delegate4 != delegate6);
 }
 
-TEST(DelegateTests, TestRemoveDelegate)
-{
-    Delegate<int, int> delegate1(func2);
-    Delegate<int, int> delegate2 { func2 };
-    delegate2 += addThree;
-    delegate2 += func2;
-    delegate1.remove(delegate2);
-    ASSERT_EQ(0, delegate1.size());
-    ASSERT_EQ(3, delegate2.size());
-    delegate1 += func2;
-    delegate1.remove(addThree);
-    ASSERT_EQ(1, delegate1.size());
-    ASSERT_EQ(4, delegate1(2));
-    delegate2 += [](int x) { return x + 5; };
-    Delegate<int, int> delegate4([](int x) { return x + 5; });
-    delegate2.remove(delegate4);
-    // lambda not deleted because it does not have same address. 
-    ASSERT_EQ(4, delegate2.size());
-}
-
-TEST(DelegateTests, TestRemoveFunction)
-{
-    Delegate<int, int> delegate1(func2);
-    Delegate<int, int> delegate2(addThree);
-    delegate1 += func2;
-    delegate2 += func2;
-    delegate2 += addThree;
-    delegate1.remove(addThree);
-    ASSERT_EQ(2, delegate1.size());
-    delegate1.remove(func2);
-    ASSERT_EQ(0, delegate1.size());
-    delegate2.remove(addThree);
-    ASSERT_EQ(1, delegate2.size());
-}
-
 TEST(DelegateTests, TestMinusEqualsFunction)
 {
     class Object
@@ -294,19 +259,19 @@ TEST(DelegateTests, TestMinusEqualsFunction)
     Object object;
     Delegate<int, int> delegate1(func2);
     delegate1 += addThree;
-    delegate1 += std::bind(&Object::addFive, object, _1);
+    delegate1 += { object, &Object::addFive };
     ASSERT_EQ(3, delegate1.size());
     Delegate<int, int> delegate2;
     delegate2 += func2;
     delegate2 += addThree;
     delegate2 += func2;
     delegate1 -= addThree;
-    delegate1 -= std::bind(&Object::addFive, object, _1);    
+    delegate1 -= { object, &Object::addFive };    
     ASSERT_EQ(1, delegate1.size());
     delegate2 -= func2;
     ASSERT_EQ(1, delegate2.size());
     ASSERT_EQ(5, delegate2(2));
-    delegate2 -= std::bind(&Object::addFive, object, _1);
+    delegate2 -= { object, &Object::addFive };
     ASSERT_EQ(1, delegate2.size());
     ASSERT_EQ(6, delegate2(3));
 
@@ -324,7 +289,7 @@ TEST(DelegateTests, TestMinusEqualsDelegate)
     delegate1 += addThree;
     Delegate<int, int> delegate2(object, &Object::addFive);
     delegate2 += func2;
-    delegate2 += std::bind(&Object::addFive, &object, _1);
+    delegate2 += { object, &Object::addFive };
     delegate2 -= delegate1;
     ASSERT_EQ(2, delegate2.size());
     delegate2 += func2;

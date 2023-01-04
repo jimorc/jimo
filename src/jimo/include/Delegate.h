@@ -256,28 +256,6 @@ namespace jimo
             {
                 return operator ()(args...);
             }
-            /// @brief Remove all functions in the input Delegate object from the functions 
-            // in this object.
-            /// @param other the Delegate object containing the functions to remove.
-            /// @return the Delegate object containing the functions that are in this, but
-            /// not in other.
-            Delegate& remove(const Delegate& other) noexcept
-            {
-                for (const function_t& function : other.m_data->functions)
-                {
-                    std::erase(m_data->functions, Delegate(function));
-                }
-                return *this;
-            }
-            /// @brief Remove the function from this object
-            /// @param function The function to remove.
-            /// @return Delegate object containing functions that are in this instance 
-            /// without function.
-            Delegate& remove(const function_t& function)
-            {
-                std::erase(m_data->functions, Delegate(function));
-                return *this;
-            }
             /// @brief Compare two Delegates for equality
             /// @param other The second Delegate object to compare to this
             /// @return true if other contains the same delegates in the same order,
@@ -332,7 +310,7 @@ namespace jimo
             /// in the original Delegate object minus the function specified by the parameter.
             Delegate& operator -=(const function_t& function)
             {
-                remove(function);
+                std::erase(m_data->functions, Delegate(function));
                 return *this;
             }
             /// @brief Remove the functions in one Delegate object from this object
@@ -342,7 +320,11 @@ namespace jimo
             /// specified by the parameter
             Delegate& operator -=(const Delegate& delegate)
             {
-                remove(delegate);
+                for (const auto& function : delegate.m_data->functions)
+                {
+                    std::erase(m_data->functions, Delegate(function));
+
+                }
                 return *this;
             }
             /// @brief Invokes the functions in the current Delegate object.
