@@ -265,7 +265,7 @@ namespace jimo
             {
                 for (const function_t& function : other.m_data->functions)
                 {
-                    remove(function);
+                    std::erase(m_data->functions, Delegate(function));
                 }
                 return *this;
             }
@@ -275,8 +275,7 @@ namespace jimo
             /// without function.
             Delegate& remove(const function_t& function)
             {
-                std::erase_if(m_data->functions,
-                    [&function](function_t& func) -> bool { return are_equal(func, function); });
+                std::erase(m_data->functions, Delegate(function));
                 return *this;
             }
             /// @brief Compare two Delegates for equality
