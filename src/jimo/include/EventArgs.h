@@ -20,7 +20,7 @@ namespace jimo
     /// @remark To pass an object that does not contain any data, pass an EventArgs object.
     /// @remark The Event.cpp example program uses both a derived NumberEventArgs class
     /// object and an empty EventArgs object.
-    /// @example Event/Event.cpp
+    /// @example Event/Event1/Event1.cpp
     class EventArgs
     {
         public:

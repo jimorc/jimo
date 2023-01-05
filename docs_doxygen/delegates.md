@@ -12,7 +12,7 @@ for every StopWatch tick event.
 
 The following example shows a Delegate declaration representing functions that take two
 integers as parameters, and returns an integer:
-```C++
+```
 using PerformCalculation =  jimo::Delegate<int, int, int>;
 ```
 
@@ -32,7 +32,7 @@ That method can be used in a Delegate for a sort algorithm. Because the comparis
 separate from the library, the sort method can be more general.
 
 ## Difference Between jimo::Delegate and std::function
-Unlike std::functions, jimo::Delegates can be chained together;for example, mulitple
+Unlike std::functions, jimo::Delegates can be chained together; for example, mulitple
 std::functions can be called on a single event.
 
 jimo::Delegate is a collection of std::functions.
@@ -56,7 +56,7 @@ A jimo::Delegate is a type that safely encapsulates a function, functor, static 
 Delegates are object-oriented, type safe, and secure. The type of a Delegate is defined by
 the name of the Delegate. The following example declares Delegate called LineWriter that
 can encapsulate a method that takes a std::string as an argument and returns a void:
-```C++
+```
 using LineWriter = jimo::Delegate<void, std::string>;
 ```
 
@@ -68,21 +68,21 @@ value, if any, from the method is returned to the caller by the delegate. This i
 as invoking the Delegate. An instantiated Delegate can be invoked as if it were the
 wrapped method itself. Here is an example:
 
-```C++
+```
 // Create a method for a Delegate.
 void delegateMethod(const std::string& message)
 {
     std::cout << message << std::endl;
 }
 ```
-```C++
+```
 // Instantiate the Delegate.
 LineWriter handler { delegateMethod };
 // Call the Delegate.
 handler("Hello World!");
 ```
 or
-```C++
+```
 // Instantiate the Delegate.
 LineWriter handler = LineWriter(delegateMethod);
 // Call the Delegate.
@@ -101,14 +101,14 @@ Another common use of callbacks is defining a custom comparison method and passi
 Delegate to a sort method.
 
 Here is an example that uses the LineWriter Delegate type as a parameter:
-```C++
+```
 void methodWithCallback(int value1, int value2, LineWriter callback)
 {
     callback("The number is: " + to_string(value 1 + value2));
 }
 ```
 You can then pass the Delegate created above to that method:
-```C++
+```
 methodWithCallback(1, 2, handler);
 ```
 and receive the following output on the console:
@@ -121,16 +121,16 @@ the <code>std::cout</code> directly - it does not have to be designed with
 a string and pass the string to another method. This is especially powerful since a
 delegated method can use any number of parameters. When a jimo::Delegate is constructed to
 wrap an instance method, the Delegate references both the instance and the method. A
-Delegate hos no knowledge of the instance type aside from the method it wraps, so a
+Delegate has no knowledge of the instance type aside from the method it wraps, so a
 Delegate can refer to any type of object as long as there is a method on that object that
 matches the Delegate signature. When a Delegate is constructed to wrap a static method, it
 only references the method. Consider the following declarations:
-```C++
+```
 class AClass
 {
     public:
         void method1(const std::string& message) {}
-        void method1(const std::string& message) {}
+        void method2(const std::string& message) {}
 };
 ```
 Along with the static <code>delegateMethod</code> shown previously, we now have three
@@ -139,7 +139,7 @@ methods that can be wrapped in a <code>LineWriter</code> instance.
 A Delegate can call more than one method when invoked. This is referred to as multicasting.
 To add an extra method to the Delegate's list of methods - the invocation list - simply
 requires adding two delegates using the addition assignment operator (+=). For example:
-```C++
+```
 AClass obj;
 LineWriter lr1 { obj, &AClass::method1 };
 LineWriter lr2 { obj, &AClass::method2 };
@@ -159,16 +159,16 @@ exception is passed to the caller of the Delegate and no subsequent methods in t
 invocation list are called. If the Delegate has a return value and/or out parameters, it
 returns the return value and parameters of the last method invoked. To remove a method
 from the invocation list, use the subtraction assignment operator (-=). For example:
-```C++
+```
 // Remove method1
 allMethodsDelegate -= lr1;
 // Remove method2
-allMethodsDelegate -= std::bind(&AClass::method2, &obj, std::placeholders::_1);
+allMethodsDelegate -= { obj, &AClass::method2 };
 ```
 Because jimo::Delegate types are classes, the methods and properties defined by the class
 can be called on the Delegate. For example, to find the number of methods in a Delegate's
 invocation list, call:
-```C++
+```
 size_t invocationCount = allMethodsDelegate.size();
 ```
 Multicast delegates are used extensively in event handling. jimo::Event source objects send
@@ -180,7 +180,7 @@ method on the recipient, delivering the event data. The Delegate type for a give
 defined by the event source. For more information, see [Events](events.md).
 
 Comparing Delegates of two different types will result in a compilation error. For example:
-```C++
+```
 Delegate<int, int> intInt;
 Delegate<void, int> voidInt;
 // Compile time error
@@ -193,7 +193,7 @@ Delegate<int, int> intInt2;
 ## Delegates With Named Methods
 A jimo::Delegate can be associated with a named method. When you instantiate a named method,
 the method is passed as a parameter; for example:
-```C++
+```
 // Declare a Delegate
 using Worker = jimo::Delegate<void, int>;
 // Define a class containing a worker method
@@ -207,9 +207,9 @@ WorkerClass object;
 Worker worker { object, &WorkerClass::doWork };
 // or alternatively
 // Worker worker;
-// worker += std::bind(&WorkerClass::doWork, &object, std::placeholder::_1);
+// worker += object, &WorkerClass::doWork };
 ```
-This is called using a named method Delegates constructed with named methods can
+This is called using a named method. Delegates constructed with named methods can
 encapsulate either a static method or instance method. However, in a situation where
 creating a new method is unwanted overhead, C++ and jimo enable you to instantiate a
 Delegate and immediately specify a lambda that the Delegate will process when it is
@@ -222,98 +222,14 @@ Delegate declaration.
 or a lambda.
 * If a lambda is specified either in a Delegate constructor or Delegate::operator += call, then
 the lambda cannot be removed by repeating the lambda in a Delegate::operator-= call.
-* Although the Delegate can use a reference parameter (not a const reference), it is not
-recommended with multicast event Delegates because you cannot know the order in which the
-Delegate methods are called.
 
 ### Example 1
 The following is a simple example of declaring and using a Delegate. Notice that both the
 Delegate, <code>ProcessTwoNumbers</code>, and the associated method, 
 <code>multiplyNumbers</code> have the same signature:
-```C++
-#include "Delegate.h"
-#include <iostream>
+@include Delegate/Delegate3/Delegate3.cpp
 
-using namespace jimo;
-
-// Declare ProcessTwoNumbers Delegate
-using ProcessTwoNumbers = Delegate<void, int, double>;
-
-class MathClass
-{
-    public:
-        void multiplyNumbers(int x, double y)
-        {
-            std::cout << m * n;
-        }
-};
-
-int main()
-{
-    MathClass mathClass
-    ProcessTwoNumbers delegate { mathClass, &MathClass::multiplyNumbers };
-    // Invoke Delegate object
-    std::cout << "Invoking the delegate using 'multiplyNumbers':\n";
-    for (int i = 1; i <= 5; ++i)
-    {
-        delegate(1, 3);
-        std::cout << '\n';
-    }
-}
-
-/* Output:
- Invoking the delegate using 'multiplyNumbers':
- 3 6 9 12 15
- */
-```
-### 
-Example 2
+### Example 2
 In the following example, one Delegate is mapped to a function, a functor, a static
 method, an instance method, and a lambda.
-```C++
-#include <iostream>
-#include "Delegate.h"
-
-using namespace jimo;
-
-using Functions = Delegate<void>;
-
-void func()
-{
-    std::cout << "A message from func\n";
-}
-
-class Functor
-{
-    public:
-        operator ()() { std::cout << "A message from a functor\n";}
-};
-
-class AClass
-{
-    public:
-        static void staticMethod() { std::cout << "A message from a static method\n"; }
-        void instanceMethod() { std::cout << "A message from an instance method\n" }
-};
-
-int main()
-{
-    Functor functor;
-    AClass aClass;
-    Functions functions { func };
-    Functions functions2 { aClass, &AClass::instanceMethod };
-    functions += functor;
-    functions += AClass::staticMethod;
-    functions += functions2;
-    functions += []() { std::cout << "A message from a lambda\n"; };
-
-    functions();
-}
-
-/* Output:
- A message from func
- A message from a functor
- A message from a static method
- A message from an instance method
- A message from a lambda
- */
+@include Delegate/Delegate2/Delegate2.cpp

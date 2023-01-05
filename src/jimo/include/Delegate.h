@@ -18,7 +18,7 @@ namespace jimo
     /// that can be used as callbacks or event handlers.
     
     /// Here is a program that illustrates the use of the Delegate class:
-    /// \include Delegate/Delegate.cpp
+    /// @include Delegate/Delegate1/Delegate1.cpp
     /// @tparam result_t The result type that is returned from the delegates.
     /// @tparam arguments_t The argument types for any parameters for functions represented by the Delegate.
     template<typename result_t, typename... arguments_t>

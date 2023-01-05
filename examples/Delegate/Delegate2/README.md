@@ -1,10 +1,10 @@
-# Delegate
+# Delegate2
 
 demonstrates the use of jimo::Delegate class.
 
 ## Sources
 
-* [Delegate.cpp](Delegate.cpp)
+* [Delegate2.cpp](Delegate2.cpp)
 * [CMakeLists.txt](CMakeLists.txt)
 
 ## Build and Run
@@ -16,7 +16,7 @@ Open "Command Prompt" or "Terminal". Navigate to the folder that contains the ex
 and type the following:
 
 ```bash
-./Delegate
+./Delegate2
 ```
 
 ## Output
@@ -24,6 +24,9 @@ and type the following:
 The following is sample output from the program.
 
 ```
-Data: a = 3 b = 5 c = 0 d = 16.5
-Data: a = 6 b = 5 c = 6 d = -1.3
+A message from func
+A message from a functor
+A message from a static method
+A message from an instance method
+A message from a lambda
 ```

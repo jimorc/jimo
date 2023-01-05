@@ -31,9 +31,9 @@ void handleCustomEvent(Object& sender, const customEventArgs& e)
 }
 ```
 2. Use the addition assignment operator to attach an event handler to the event. In the
-following example, assume that an object named *publisher* has an event named 
-*raiseCustomEvent*. Note that the *Subscriber* class needs a reference to the 
-*publisher* object in order to subscribe to its events:
+following example, assume that an object named <code>publisher</code> has an event named 
+<code>raiseCustomEvent</code>. Note that the *Subscriber* class needs a reference to the 
+<code>publisher</code> object in order to subscribe to its events:
 ```
 publisher.raiseCustomEvent += { *this, &Subscriber::handleCustomEvent };
 ```
@@ -43,12 +43,13 @@ publisher.raiseCustomEvent += CustomEventHandler(*this, &Subscriber::handleCusto
 ```
 ### To Subscribe to Events by Using a Lambda Expression
 If you don't have to unsubscribe from an event later, you can use the addition assignment
-operator *+=* to attach a 
+operator <code>+=</code> to attach a 
 [lambda expression](https://en.cppreference.com/w/cpp/language/lambda) as an event handler.
-In the following example, assume that an object named *publisher* has an event named
-*raiseCustomEvent* and that a *CustomEventArgs* class has also been defined to carry some
-kind of specialized event information. Note that a *subscriber* object needs a reference
-to *publisher* in order to subscribe to its events.
+In the following example, assume that an object named <code>publisher</code> has an event 
+named <code>raiseCustomEvent</code> and that a <code>CustomEventArgs</code> class has also 
+been defined to carry some
+kind of specialized event information. Note that a <code>subscriber</code> object needs a 
+reference to <code>publisher</code> in order to subscribe to its events.
 ```
 publisher.raiseCustomEvent += [](Object& sender, const CustomEventArgs& e) {
     std::string s = sender.toString() + " " + e.toString();
@@ -69,10 +70,11 @@ destroy a subscriber object. Until you unsubscribe from an event, the multicast 
 that underlies the event in the publishing object has a reference to the Delegate that
 encapsulates the subscriber's event handler.
 ### To Unsubscribe from an Event
-Use the subtraction assignment operator *-=* to unsubscribe from an event. Assuming you 
+Use the subtraction assignment operator <code>-=</code> to unsubscribe from an event. Assuming you 
 have used the code from the section 
-[How to Subscribe to and Unsubscribe from Events](#how-to-subscribe-to-and-unsubscribe-from-events)
-to subscribe to *raiseCustomEvent*, you can unsubscribe from the event as follows:
+*How to Subscribe to and Unsubscribe from Events*
+to subscribe to <code>raiseCustomEvent</code>, you can unsubscribe from the event as
+ follows:
 ```
 publisher.raiseCustomEvent -= { *this, &Subscriber::handleCustomEvent };
 ```
