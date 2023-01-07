@@ -1,1 +1,1 @@
-add_subdirectory(OnceTimer)
+add_subdirectory(Timer1)

@@ -17,6 +17,7 @@ add_executable(jimoTest
   StopWatchTests.cpp
   StopWatchExceptionTests.cpp
   TimerEventArgsTests.cpp
+  TimerTests.cpp
   )
 
 target_link_libraries(jimoTest

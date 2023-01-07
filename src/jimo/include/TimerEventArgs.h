@@ -12,7 +12,7 @@ namespace jimo::timing
     /// @tparam clock_t The std::chrono clock type to use
     template<typename clock_t>
     requires std::chrono::is_clock_v<clock_t>
-    class TimerEventArgs : jimo::EventArgs
+    class TimerEventArgs : public jimo::EventArgs
     {
         public:
             /// @brief Constructor
@@ -21,7 +21,7 @@ namespace jimo::timing
             virtual ~TimerEventArgs() {}
             /// @brief Get the time stored in the EventArgs instance.
             /// @return The time at which the TimeEventArgs instance was created.
-            auto& time() { return m_time; }
+            auto& time() const noexcept { return m_time; }
         private:
             std::chrono::time_point<clock_t> m_time;
     };
