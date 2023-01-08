@@ -5,6 +5,7 @@
 
 using namespace jimo::timing;
 using utc = std::chrono::utc_clock;
+using steady = std::chrono::steady_clock;
 int main() 
 {
     Timer<utc> timer1;
@@ -30,5 +31,18 @@ int main()
     {
         std::cerr << e.what() << '\n';
     }
-    
+    Timer<steady> timer3;
+    try
+    {
+        timer3.tick += [](Timer<steady>&, const TimerEventArgs<steady>&) {
+            std::cout << "tock\n";
+        };
+        timer3.run(250ms);
+        std::this_thread::sleep_for(1100ms);
+        timer3.stop();
+    }
+    catch(const std::exception& e)
+    {
+        std::cerr << e.what() << '\n';
+    }
 }

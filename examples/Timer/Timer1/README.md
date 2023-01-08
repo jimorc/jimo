@@ -24,4 +24,8 @@ The following is sample output from the program.
 ```
 Timer::stop called for a timer that was never started.
 tick
+tock
+tock
+tock
+tock
 ```

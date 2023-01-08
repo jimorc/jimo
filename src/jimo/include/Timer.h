@@ -12,6 +12,12 @@ namespace jimo::timing
 {
     using namespace std::chrono_literals;
 
+    enum class TimerStatus
+    {
+        NeverStarted,
+        Running,
+        Stopped,
+    };
     /// @brief A Timer class.
     ///
     /// This class allows you to fire events once immediately, once sometime in the future,
@@ -26,7 +32,7 @@ namespace jimo::timing
     {
         public:
             /// @brief Constructor
-            Timer() {}
+            Timer() : m_status(TimerStatus::NeverStarted) {}
             /// @brief Destructor
             virtual ~Timer() noexcept {}
             /// @brief tick event.
@@ -51,6 +57,28 @@ namespace jimo::timing
                         std::mem_fn(&Timer::runTimer), this);
                 }
             }
+            /// @brief Run the timer to fire at the specified interval.
+            ///
+            /// Timer never "expires". Well it will if run long enough, but that is a huge
+            /// amount of time.
+            /// @param timerInterval The time interval between firings of the timer. This
+            /// time cannot be less than microseconds in duration.
+            /// @note To stop the timer, call Timer::stop.
+            /// @note If the interval is too short, there will not be enough time to
+            /// run event handlers. In this case, the event fires immediately upon
+            /// completion of the previous fire event.
+            void run(const std::chrono::microseconds& timerInterval)
+            {
+                if (m_status == TimerStatus::NeverStarted)
+                {
+                    m_status = TimerStatus::Running;
+                    m_timerCount = -1;
+                    m_interval = timerInterval;
+                    m_timeToFireEvent = clock_t::now() + timerInterval;
+                    m_timerThread = std::make_unique<std::jthread>(
+                        std::mem_fn(&Timer::runTimer), this);
+                }
+            }
             /// @brief Stop the timer.
             ///
             /// @note The timer does not stop immediately; it waits until the next time
@@ -66,18 +94,25 @@ namespace jimo::timing
                     throw TimerException(
                         "Timer::stop called for a timer that was never started.");
                 }
+                m_timerCount = 0;
+                m_status = TimerStatus::Stopped;
             }
         private:
             void runTimer()
             {
-                auto timeToWait = m_timeToFireEvent - clock_t::now();
-                if (timeToWait > 0ns)
+                while (m_timerCount != 0)
                 {
-                    std::this_thread::sleep_for(timeToWait);
-                }
-                if (m_status == TimerStatus::Running)
-                {
-                    onTick(TimerEventArgs<clock_t>());
+                    auto timeToWait = m_timeToFireEvent - clock_t::now();
+                    if (timeToWait > 0ns)
+                    {
+                        std::this_thread::sleep_for(timeToWait);
+                    }
+                    if (m_status == TimerStatus::Running)
+                    {
+                        onTick(TimerEventArgs<clock_t>());
+                        m_timeToFireEvent += m_interval;
+                        --m_timerCount;
+                    }
                 }
                 m_status = TimerStatus::Stopped;
             }
@@ -85,8 +120,10 @@ namespace jimo::timing
             {
                 tick(*this, e);
             }
-            TimerStatus m_status { TimerStatus::NeverStarted };
-            long m_timerCount { 0 };
+            TimerStatus m_status;
+            long long m_timerCount { 0 };
+            // does not compile if m_interval is nanoseconds
+            std::chrono::microseconds m_interval { 1s };
             std::chrono::time_point<clock_t> m_timeToFireEvent;
             std::unique_ptr<std::jthread> m_timerThread;
     };

@@ -82,3 +82,17 @@ TEST(TimerTests, TestRunOnceLater)
     ASSERT_TRUE(duration >= 0ns);
     ASSERT_TRUE(duration <= 100ms);
 }
+
+TEST(TimerTests, TestRunInterval)
+{
+    using utc = std::chrono::utc_clock;
+    int count = 0;
+    Timer<utc> timer;
+    timer.tick += [&count](Timer<utc>&, const TimerEventArgs<utc>&) {
+        ++count;
+    };
+    timer.run(50ms);
+    std::this_thread::sleep_for(125ms);
+    timer.stop();
+    ASSERT_EQ(2, count);
+}
