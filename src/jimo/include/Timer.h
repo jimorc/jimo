@@ -12,13 +12,16 @@ namespace jimo::timing
 {
     using namespace std::chrono_literals;
 
+    /// @brief Timer status
     enum class TimerStatus
     {
+        /// @brief Timer has never started.
         NeverStarted,
+        /// @brief Timer is currently running.
         Running,
+        /// @brief Timer has stopped running.
         Stopped,
     };
-    /// @brief A Timer class.
     ///
     /// This class allows you to fire events once immediately, once sometime in the future,
     /// or multiple times starting immediately or sometime in the future, and multiple
@@ -73,6 +76,26 @@ namespace jimo::timing
                 {
                     m_status = TimerStatus::Running;
                     m_timerCount = -1;
+                    m_interval = timerInterval;
+                    m_timeToFireEvent = clock_t::now() + timerInterval;
+                    m_timerThread = std::make_unique<std::jthread>(
+                        std::mem_fn(&Timer::runTimer), this);
+                }
+            }
+            /// @brief Run the timer to fire at the specified interval for the specified
+            /// number of times.
+            /// @param timerInterval The time interval between firings of the timer. This
+            /// time cannot be less than milliseconds in duration.
+            /// @param count The number of times to fire the timer.
+            /// @note If the interval is too short, there will not be enough time to
+            /// run event handlers. In this case, the event fires again immediately upon
+            /// completion of the previous fire event.
+            void run(const std::chrono::microseconds& timerInterval, long long count)
+            {
+                if (m_status == TimerStatus::NeverStarted)
+                {
+                    m_status = TimerStatus::Running;
+                    m_timerCount = count;
                     m_interval = timerInterval;
                     m_timeToFireEvent = clock_t::now() + timerInterval;
                     m_timerThread = std::make_unique<std::jthread>(

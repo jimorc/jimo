@@ -45,4 +45,18 @@ int main()
     {
         std::cerr << e.what() << '\n';
     }
+    Timer<steady> timer4;
+    try
+    {
+        timer4.tick += [](Timer<steady>&, const TimerEventArgs<steady>&) {
+            std::cout << "tickle\n";
+        };
+        timer4.run(100ms, 2);
+        std::this_thread::sleep_for(250ms);
+    }
+    catch(const std::exception& e)
+    {
+        std::cerr << e.what() << '\n';
+    }
+    
 }

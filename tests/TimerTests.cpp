@@ -96,3 +96,16 @@ TEST(TimerTests, TestRunInterval)
     timer.stop();
     ASSERT_EQ(2, count);
 }
+
+TEST(TimerTests, TestRunNumberOfFiringsAtInterval)
+{
+    using utc = std::chrono::utc_clock;
+    int count = 0;
+    Timer<utc> timer;
+    timer.tick += [&count](Timer<utc>&, const TimerEventArgs<utc>&) {
+        ++count;
+    };
+    timer.run(25ms, 3);
+    std::this_thread::sleep_for(150ms);
+    ASSERT_EQ(3, count);
+}
