@@ -30,4 +30,7 @@ tock
 tock
 tickle
 tickle
+tick, tock
+tick, tock
+tick, tock
 ```

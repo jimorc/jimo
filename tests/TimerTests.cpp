@@ -109,3 +109,16 @@ TEST(TimerTests, TestRunNumberOfFiringsAtInterval)
     std::this_thread::sleep_for(150ms);
     ASSERT_EQ(3, count);
 }
+
+TEST(TimerTests, TestRunNumberOfFiringsAtIntervalFromSpecifiedTime)
+{
+    using steady = std::chrono::steady_clock;
+    int count = 0;
+    Timer<steady> timer;
+    timer.tick += [&count](Timer<steady>&, const TimerEventArgs<steady>&) {
+        ++count;
+    };
+    timer.run(steady::now() + 10ms, 25ms, 3);
+    std::this_thread::sleep_for(150ms);
+    ASSERT_EQ(3, count);
+}
