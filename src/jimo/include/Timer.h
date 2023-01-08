@@ -51,14 +51,7 @@ namespace jimo::timing
             /// to fire the tick event.
             void run(const std::chrono::time_point<clock_t>& startTime)
             {
-                if (m_status == TimerStatus::NeverStarted)
-                {
-                    m_status = TimerStatus::Running;
-                    m_timerCount = 1;
-                    m_timeToFireEvent = startTime;
-                    m_timerThread = std::make_unique<std::jthread>(
-                        std::mem_fn(&Timer::runTimer), this);
-                }
+                run(startTime, 0us, 1);
             }
             /// @brief Run the timer to fire at the specified interval.
             ///
@@ -72,15 +65,7 @@ namespace jimo::timing
             /// completion of the previous fire event.
             void run(const std::chrono::microseconds& timerInterval)
             {
-                if (m_status == TimerStatus::NeverStarted)
-                {
-                    m_status = TimerStatus::Running;
-                    m_timerCount = -1;
-                    m_interval = timerInterval;
-                    m_timeToFireEvent = clock_t::now() + timerInterval;
-                    m_timerThread = std::make_unique<std::jthread>(
-                        std::mem_fn(&Timer::runTimer), this);
-                }
+                run(clock_t::now() + timerInterval, timerInterval, -1);
             }
             /// @brief Run the timer to fire at the specified interval for the specified
             /// number of times.
@@ -98,15 +83,7 @@ namespace jimo::timing
             /// completion of the previous fire event.
             void run(const std::chrono::microseconds& timerInterval, long long count)
             {
-                if (m_status == TimerStatus::NeverStarted)
-                {
-                    m_status = TimerStatus::Running;
-                    m_timerCount = count;
-                    m_interval = timerInterval;
-                    m_timeToFireEvent = clock_t::now() + timerInterval;
-                    m_timerThread = std::make_unique<std::jthread>(
-                        std::mem_fn(&Timer::runTimer), this);
-                }
+                run(clock_t::now() + timerInterval, timerInterval, count);
             }
             /// @brief Run the timer to fire at the specified time, and at the specified
             /// interval thereafter for the specified number of times.
@@ -120,6 +97,9 @@ namespace jimo::timing
             ///> 0 - never fire.
             ///
             ///> -1 - fire until Timer::stop is called.
+            /// @note If the interval is too short, there will not be enough time to
+            /// run event handlers. In this case, the event fires again immediately upon
+            /// completion of the previous fire event.
             void run(const std::chrono::time_point<clock_t>& startTime,
                 const std::chrono::microseconds& timerInterval, long long count)
             {
