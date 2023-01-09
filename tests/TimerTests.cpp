@@ -122,3 +122,20 @@ TEST(TimerTests, TestRunNumberOfFiringsAtIntervalFromSpecifiedTime)
     std::this_thread::sleep_for(150ms);
     ASSERT_EQ(3, count);
 }
+
+TEST(TimerTests, TestRunAlreadyRunningTimer)
+{
+    using steady = std::chrono::steady_clock;
+    Timer<steady> timer;
+    timer.run(1s);
+    try
+    {
+        timer.run(steady::now());
+    }
+    catch(const TimerException& e)
+    {
+        ASSERT_STREQ("Timer is already running.", e.what());
+        return;
+    }
+    FAIL() << "Did not throw exception";
+}

@@ -112,6 +112,11 @@ namespace jimo::timing
                     m_timerThread = std::make_unique<std::jthread>(
                         std::mem_fn(&Timer::runTimer), this);
                 }
+                else if (m_status == TimerStatus::Running)
+                {
+                    stop();
+                    throw TimerException("Timer is already running.");
+                }
             }
             /// @brief Stop the timer.
             ///
