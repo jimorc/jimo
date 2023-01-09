@@ -139,3 +139,34 @@ TEST(TimerTests, TestRunAlreadyRunningTimer)
     }
     FAIL() << "Did not throw exception";
 }
+
+TEST(TimerTests, TestRunStoppedTimer)
+{
+    using steady = std::chrono::steady_clock;
+    Timer<steady> timer;
+    timer.run(1s);
+    timer.stop();
+    try
+    {
+        timer.run(steady::now());
+    }
+    catch(const TimerException& e)
+    {
+        ASSERT_STREQ("Timer is already running.", e.what());
+        return;
+    }
+    SUCCEED();
+}
+
+TEST(TimerTests, TestRunDefaultStartTime)
+{
+    using steady = std::chrono::steady_clock;
+    int count = 0;
+    Timer<> timer;
+    timer.tick += [&count](Timer<>&, const TimerEventArgs<steady>&) {
+        ++count;
+    };
+    timer.run();
+    std::this_thread::sleep_for(150ms);
+    ASSERT_EQ(1, count);
+}

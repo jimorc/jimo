@@ -29,7 +29,7 @@ namespace jimo::timing
     /// Here is an sample program:
     /// @include Timer/Timer1/Timer1.cpp
     /// @tparam clock_t A std::chrono clock.
-    template<typename clock_t>
+    template<typename clock_t = std::chrono::steady_clock>
     requires std::chrono::is_clock_v<clock_t>
     class Timer : public Object
     {
@@ -50,7 +50,7 @@ namespace jimo::timing
             /// If this time is in the future, the timer waits until or after that time
             /// to fire the tick event.
             /// @exception TimerException if called on an already running timer.
-            void run(const std::chrono::time_point<clock_t>& startTime)
+            void run(const std::chrono::time_point<clock_t>& startTime = clock_t::now())
             {
                 run(startTime, 0us, 1);
             }
@@ -110,7 +110,8 @@ namespace jimo::timing
             void run(const std::chrono::time_point<clock_t>& startTime,
                 const std::chrono::microseconds& timerInterval, long long count)
             {
-                if (m_status == TimerStatus::NeverStarted)
+                if (m_status == TimerStatus::NeverStarted || 
+                    m_status == TimerStatus::Stopped)
                 {
                     m_status = TimerStatus::Running;
                     m_timerCount = count;
@@ -119,7 +120,7 @@ namespace jimo::timing
                     m_timerThread = std::make_unique<std::jthread>(
                         std::mem_fn(&Timer::runTimer), this);
                 }
-                else if (m_status == TimerStatus::Running)
+                else
                 {
                     stop();
                     throw TimerException("Timer is already running.");
@@ -130,8 +131,6 @@ namespace jimo::timing
             /// @note The timer does not stop immediately; it waits until the next time
             /// that the timer expires before actually stopping the timer. The tick event
             /// handlers do not run at that time.
-            /// @note At the moment, the timer does not actually stop. This functionality
-            /// will be added later.
             /// @exception TimerException if run has never been called.
             void stop()
             {

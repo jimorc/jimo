@@ -10,7 +10,7 @@ namespace jimo::timing
 {
     /// @brief An EventArgs class for Timer events
     /// @tparam clock_t The std::chrono clock type to use
-    template<typename clock_t>
+    template<typename clock_t = std::chrono::steady_clock>
     requires std::chrono::is_clock_v<clock_t>
     class TimerEventArgs : public jimo::EventArgs
     {

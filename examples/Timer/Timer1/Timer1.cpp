@@ -48,10 +48,10 @@ int main()
     {
         std::cerr << e.what() << '\n';
     }
-    Timer<steady> timer4;
+    Timer timer4;
     try
     {
-        timer4.tick += [](Timer<steady>&, const TimerEventArgs<steady>&) {
+        timer4.tick += [](Timer<>&, const TimerEventArgs<>&) {
             std::cout << "tickle\n";
         };
         // fire timer twice at 100ms intervals
@@ -66,7 +66,7 @@ int main()
     Timer<steady> timer5;
     try
     {
-        timer5.tick += [](Timer<steady>&, const TimerEventArgs<steady>&) {
+        timer5.tick += [](Timer<steady>&, const TimerEventArgs<>&) {
             std::cout << "tick, tock\n";
         };
         // fire timer 3 times at 100ms intervals starting at specified time
