@@ -49,6 +49,7 @@ namespace jimo::timing
             /// If this time is *now* or in the past, the tick event fires immediately.
             /// If this time is in the future, the timer waits until or after that time
             /// to fire the tick event.
+            /// @exception TimerException if called on an already running timer.
             void run(const std::chrono::time_point<clock_t>& startTime)
             {
                 run(startTime, 0us, 1);
@@ -59,6 +60,7 @@ namespace jimo::timing
             /// amount of time.
             /// @param timerInterval The time interval between firings of the timer. This
             /// time cannot be less than microseconds in duration.
+            /// @exception TimerException if called on an already running timer.
             /// @note To stop the timer, call Timer::stop.
             /// @note If the interval is too short, there will not be enough time to
             /// run event handlers. In this case, the event fires immediately upon
@@ -78,6 +80,7 @@ namespace jimo::timing
             ///> 0 - never fire.
             ///
             ///> -1 - fire until Timer::stop is called.
+            /// @exception TimerException if called on an already running timer.
             /// @note If the interval is too short, there will not be enough time to
             /// run event handlers. In this case, the event fires again immediately upon
             /// completion of the previous fire event.
@@ -97,6 +100,10 @@ namespace jimo::timing
             ///> 0 - never fire.
             ///
             ///> -1 - fire until Timer::stop is called.
+            /// @exception TimerException if called on an already running timer.
+            /// @note If the start time is in the past, the tick event will fire
+            /// continuously until <code>startTime += timerInterval</code> is greater than the 
+            /// current time, or the tick event has fired <code>count</code> times.
             /// @note If the interval is too short, there will not be enough time to
             /// run event handlers. In this case, the event fires again immediately upon
             /// completion of the previous fire event.
