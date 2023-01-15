@@ -27,6 +27,15 @@ int func3(int x)
     return addThree(x);
 }
 
+TEST(DelegateTests, TestNoFunctions)
+{
+    Delegate<void> delegate1;
+    Delegate<int, int> delegate2;
+    delegate1();
+    delegate2(3);
+    SUCCEED();
+}
+
 TEST(DelegateTests, TestCopyConstructor)
 {
     Delegate<int> delegate;

@@ -8,15 +8,23 @@
 #include <vector>
 #include <algorithm>
 #include <iterator>
+#include <mutex>
 #include "EventArgs.h"
 
 namespace jimo
 {
+    /// @sa Event which is a specific type of Delegate.
+    /// @sa Here are some example programs:
+    /// [Delegate1](https://github.com/jimorc/jimo/tree/main/examples/Delegate/Delegate1),
+    /// [Delegate2](https://github.com/jimorc/jimo/tree/main/examples/Delegate/Delegate2),
+    /// and [Delegate3](https://github.com/jimorc/jimo/tree/main/examples/Delegate/Delegate3).
     /// @brief Represents a delegate object, which is a data structure that refers to
     /// functions, static class methods, 
     /// class instances and instance methods, Functors, or lambdas 
     /// that can be used as callbacks or event handlers.
-    
+    ///
+    /// This class is thread safe.
+    ///
     /// Here is a program that illustrates the use of the Delegate class:
     /// @include Delegate/Delegate1/Delegate1.cpp
     /// @tparam result_t The result type that is returned from the delegates.
@@ -226,6 +234,7 @@ namespace jimo
             /// @return Delegate object that contains a copy of the Delegates in the copied object.
             Delegate& operator =(const Delegate& other)
             {
+                std::lock_guard<std::mutex> lock(m_functionsLock);
                 m_data->functions = other.m_data->functions;
                 return *this;
             }
@@ -234,6 +243,7 @@ namespace jimo
             /// @return Delegate object that contains the Delegates in the moved object.
             Delegate& operator =(Delegate&& other)
             {
+                std::lock_guard<std::mutex> lock(m_functionsLock);
                 m_data->functions = other.m_data->functions;
                 other.m_data->functions.clear();
                 return *this;
@@ -241,6 +251,7 @@ namespace jimo
             /// @brief Remove all functions from the delegate
             void clear()
             {
+                std::lock_guard<std::mutex> lock(m_functionsLock);
                 m_data->functions.clear();
             }
             /// @brief Return if the delegate is empty.
@@ -262,13 +273,22 @@ namespace jimo
             /// false otherwise.
             bool operator ==(const Delegate& other) const noexcept
             {
-                if (const_cast<Delegate&>(*this).size() != const_cast<Delegate&>(other).size())
+                // const_casts are required so that a lock can be set on m_functionsLock
+                // mutex in each Delegate object. This is required to ensure that
+                // the functions in each Delegate object are not changed while this
+                // method is executing. Once the locks are released, the mutexes are reset
+                // so no changes have been made to either Delegate in this method,
+                // effectively making them const.
+                auto& delegate = const_cast<Delegate&>(*this);
+                auto& oth = const_cast<Delegate&>(other); 
+                std::scoped_lock lock(delegate.m_functionsLock, oth.m_functionsLock);
+                if (delegate.size() != oth.size())
                 {
                     return false;
                 }
-                for (size_t index = 0; index < m_data->functions.size(); ++index)
+                for (size_t index = 0; index < delegate.m_data->functions.size(); ++index)
                 {
-                    if (!are_equal(m_data->functions[index], other.m_data->functions[index]))
+                    if (!are_equal(delegate.m_data->functions[index], oth.m_data->functions[index]))
                     {
                         return false;
                     }
@@ -292,6 +312,7 @@ namespace jimo
             /// the original Delegate plus the function specified by the parameter.
             Delegate& operator +=(const function_t& function)
             {
+                std::lock_guard<std::mutex> lock(m_functionsLock);
                 combine(function);
                 return *this;
             }
@@ -301,6 +322,7 @@ namespace jimo
             /// the original Delegate plus the functions in the Delegate object that are being added.
             Delegate& operator +=(const Delegate& delegate)
             {
+                std::lock_guard<std::mutex> lock(m_functionsLock);
                 combine(delegate);
                 return *this;
             }
@@ -310,6 +332,7 @@ namespace jimo
             /// in the original Delegate object minus the function specified by the parameter.
             Delegate& operator -=(const function_t& function)
             {
+                std::lock_guard<std::mutex> lock(m_functionsLock);
                 std::erase(m_data->functions, Delegate(function));
                 return *this;
             }
@@ -320,6 +343,7 @@ namespace jimo
             /// specified by the parameter
             Delegate& operator -=(const Delegate& delegate)
             {
+                std::lock_guard<std::mutex> lock(m_functionsLock);
                 for (const auto& function : delegate.m_data->functions)
                 {
                     std::erase(m_data->functions, Delegate(function));
@@ -335,17 +359,28 @@ namespace jimo
                 {
                     return result_t();
                 }
-                for (size_t index = 0; index < m_data->functions.size() - 1; ++index)
+                std::vector<function_t> functions;
                 {
-                    m_data->functions[index](args...);
+                    // const_cast required so that we can set a lock on m_functionsLock
+                    // to prevent any changes to the functions list while copying.
+                    // The mutex is reset when the lock goes out of scope, and no other
+                    // changes are made to this, so on exit, no changes have been made
+                    // to this Delegate.
+                    auto& delegate = const_cast<Delegate&>(*this);
+                    std::lock_guard<std::mutex> lock(delegate.m_functionsLock);
+                    functions = delegate.m_data->functions;
+                }
+                for (size_t index = 0; index < functions.size() - 1; ++index)
+                {
+                    functions[index](args...);
                 }
                 if (std::is_void_v<result_t>)
                 {
-                    m_data->functions[m_data->functions.size() -1](args...);
+                    functions[functions.size() -1](args...);
                 }
                 else
                 {
-                    return m_data->functions[m_data->functions.size() -1](args...);
+                    return functions[functions.size() -1](args...);
                 }
             }
         private:
@@ -368,5 +403,6 @@ namespace jimo
                 std::vector<function_t> functions;
             };
             std::shared_ptr<data> m_data = std::make_shared<data>();
+            std::mutex m_functionsLock;
     };
 }

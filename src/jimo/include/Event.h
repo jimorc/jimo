@@ -30,9 +30,9 @@ namespace jimo
             /// @brief Compare two Event objects for equality.
             /// @param other The Event object to compare with this.
             /// @return <code>true</code> if the objects are equal, <code>false</code> otherwise.
-            virtual auto equals(const Event& other) const -> bool
+            virtual auto equals(const Event& other) const noexcept -> bool
             {
-                return *this == dynamic_cast<const EventHandler<sender_t, eventArgs_t>&>(other);
+                return *this == other;
             }
     };
 }
