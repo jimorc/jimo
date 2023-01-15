@@ -33,11 +33,17 @@ namespace jimo
             virtual auto equals(const Event& other) const noexcept -> bool
             {
                 return *this == other;
-            }virtual void invoke(sender_t& sender, eventArgs_t& e)
+            }
+            /// @brief Invoke the methods represented by the current event.
+            /// @param sender The object that called invoke.
+            /// @param e an event args object. It must be derived from EventArgs.
+            virtual void invoke(sender_t& sender, eventArgs_t& e)
             {
                 operator ()(sender, e);
             }
-            
+            /// @brief Invoke the methods represented by the current event.
+            /// @param sender The object that called invoke.
+            /// @param e an event args object. It must be derived from EventArgs.
             virtual void operator ()(sender_t& sender, eventArgs_t& e)
             {
                 if (EventHandler<sender_t, eventArgs_t>::m_data->functions.empty())

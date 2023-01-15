@@ -1,6 +1,7 @@
 # Delegates
 ## Overview
-A jimo::Delegate is a type that represents references to std::functions, that is functions, 
+A jimo::Delegate is a thread safe type that represents references to std::functions, 
+that is functions, 
 static class methods, class instance methods, functors, and lambdas, with a particular
 return type and parameter list. You invoke or execute the delegated functions through the
 Delegate instance.
@@ -8,7 +9,7 @@ Delegate instance.
 Delegates are used to pass methods as arguments to other methods. Event handlers are methods
 that are invoked through Delegates. You can create a custom method and another class can
 call your method when a certain event occurs. For example, your custom method can be called
-for every StopWatch tick event.
+for every [Timer](timer.md) tick event.
 
 The following example shows a Delegate declaration representing functions that take two
 integers as parameters, and returns an integer:

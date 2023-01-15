@@ -69,7 +69,16 @@ namespace jimo
             {
                 return "jimo::EventArgs";
             }
+            /// @brief Retrieve the halt value.
+            /// @return true if additional functions in the event list should not 
+            /// be called, and false otherwise.
+            /// @remarks The Event class checks this value in Event::operator()
+            /// to determine if additional functions should be called. See the
+            /// [Events discussion](https://github.com/jimorc/jimo/blob/main/docs_doxygen/events.md)
+            /// for more information.
             bool halt() const noexcept { return m_halt; }
+            /// @brief Set the halt value to true. Call EventArgs::halt() to determine
+            /// if additional functions in the event list should be called.
             void setHalt() noexcept { m_halt = true; }
         private:
             bool m_halt{ false };
