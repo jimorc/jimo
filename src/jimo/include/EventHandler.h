@@ -16,5 +16,5 @@ namespace jimo
     /// @tparam eventArgs_t The class type of the object containing arguments that are
     /// passed to the event.
     template<typename sender_t, typename eventArgs_t>
-    using EventHandler = Delegate<void, sender_t&, const eventArgs_t&>;
+    using EventHandler = Delegate<void, sender_t&, eventArgs_t&>;
 }

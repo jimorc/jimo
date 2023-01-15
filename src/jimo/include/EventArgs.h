@@ -69,5 +69,9 @@ namespace jimo
             {
                 return "jimo::EventArgs";
             }
+            bool halt() const noexcept { return m_halt; }
+            void setHalt() noexcept { m_halt = true; }
+        private:
+            bool m_halt{ false };
     };
 }

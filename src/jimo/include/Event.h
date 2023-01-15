@@ -8,6 +8,7 @@
 #include "EventHandler.h"
 #include <concepts>
 #include <type_traits>
+#include <functional>
 
 namespace jimo
 {
@@ -33,6 +34,24 @@ namespace jimo
             virtual auto equals(const Event& other) const noexcept -> bool
             {
                 return *this == other;
+            }
+            virtual void operator ()(sender_t& sender, eventArgs_t& e)
+            {
+                if (EventHandler<sender_t, eventArgs_t>::m_data->functions.empty())
+                {
+                    return;
+                }
+                std::vector<EventHandler<sender_t, eventArgs_t>::function_t> functions;
+                auto& event = const_cast<Event&>(*this);
+                {
+                    std::lock_guard<std::mutex> lock(event.m_functionsLock);
+                    functions = event.m_data->functions;
+                }
+                for (size_t index = 0; index < functions.size(); ++index)
+                {
+                    functions[index](sender, e);
+                    if(e.halt()) return;
+                }
             }
     };
 }

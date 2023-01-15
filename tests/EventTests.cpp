@@ -26,7 +26,8 @@ TEST(EventTests, TestConstructor)
     MyObj object;
     ASSERT_TRUE(object.anEvent.empty());
     object.anEvent += []( Object&, const EventArgs&) -> void { std::cout << "In event handler\n"; };
-    object.anEvent(object, EventArgs());
+    EventArgs args;
+    object.anEvent(object, args);
     ASSERT_FALSE(object.anEvent.empty());
     ASSERT_EQ(1, object.anEvent.size());
 }

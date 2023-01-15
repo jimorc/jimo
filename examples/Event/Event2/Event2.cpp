@@ -22,40 +22,27 @@ class Publisher : public Object
     public:
         Publisher() : m_value(0) {}
         // Declare the events
-        Event<Publisher, CustomEventArgs> raiseCustomEvent;
-        Event<Publisher, EventArgs> raiseGenericEvent;
+        Event<Publisher, CustomEventArgs> customEvent;
+        Event<Publisher, EventArgs> genericEvent;
 
         void doSomething()
         {
             // Write some code that does something useful here
             // then raise the event. You can also raise an event
             // before you execute a block of code.
-            onRaiseCustomEvent(CustomEventArgs(++m_value));
-            onRaiseGenericEvent(EventArgs());
+            CustomEventArgs cea(++m_value);
+            EventArgs e;
+            onCustomEvent(cea);
+            onGenericEvent(e);
         }
     protected:
-        void onRaiseCustomEvent(const CustomEventArgs& e)
+        void onCustomEvent(CustomEventArgs& e)
         {
-            // Make a temporary copy of the event to avoid possibility of
-            // a race condition if the last subscriber unsubscribes
-            // immediately after the empty check and before the event
-            // is raised.
-            Event<Publisher, CustomEventArgs> raiseEvent = raiseCustomEvent;
-
-            // Event will be empty if there are no subscribers.
-            if (!raiseEvent.empty())
-            {
-                // Call to raise the event
-                raiseEvent(*this, e);
-            }
+            customEvent(*this, e);
         }
-        void onRaiseGenericEvent(const EventArgs& e)
+        void onGenericEvent(EventArgs& e)
         {
-            Event<Publisher, EventArgs> raiseEvent = raiseGenericEvent;
-            if (!raiseEvent.empty())
-            {
-                raiseEvent(*this, e);
-            }
+            genericEvent(*this, e);
         }
     private:
         int m_value;
@@ -68,8 +55,8 @@ class Subscriber
         Subscriber(const std::string& id, Publisher& publisher) : m_id(id)
         {
             // Subscribe to the events
-            publisher.raiseCustomEvent += { *this, &Subscriber::handleCustomEvent };
-            publisher.raiseGenericEvent += { *this, &Subscriber::handleGenericEvent };
+            publisher.customEvent += { *this, &Subscriber::handleCustomEvent };
+            publisher.genericEvent += { *this, &Subscriber::handleGenericEvent };
         }
 
         // Define what actions to take when custom event is raised.

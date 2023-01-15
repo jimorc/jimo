@@ -33,11 +33,11 @@ class ObjectWithEvents : public Object
         {
             value1(e.value() - 3);
         }
-        auto onEvent1(const NumberEventArgs& e) noexcept -> void
+        auto onEvent1(NumberEventArgs& e) noexcept -> void
         {
             event1(*this, e);
         }
-        auto onEvent2(const EventArgs& e) noexcept -> void
+        auto onEvent2(EventArgs& e) noexcept -> void
         {
             std::invoke(event2, *this, e);
         }
@@ -46,18 +46,18 @@ class ObjectWithEvents : public Object
             std::cout << "ObjectWithEvents: " << m_value1 << ", " << m_value2;
             std::cout << ", " << m_value3 << ", " << m_value4 << '\n';
         }
-        Event<ObjectWithEvents, const NumberEventArgs> event1;
-        Event<Object, const EventArgs> event2;
+        Event<ObjectWithEvents, NumberEventArgs> event1;
+        Event<Object, EventArgs> event2;
     private:
-        int m_value1;
-        int m_value2;
-        int m_value3;
-        int m_value4;
+        int m_value1 {0};
+        int m_value2 {0};
+        int m_value3 {0};
+        int m_value4 {0};
 };
 class AnotherObject
 {
     public:
-        auto setValue4(Object& sender, const NumberEventArgs& e) noexcept
+        auto setValue4(Object& sender, NumberEventArgs& e) noexcept
         {
             dynamic_cast<ObjectWithEvents&>(sender).value4(e.value() + 12);
         }
@@ -69,9 +69,11 @@ void func(ObjectWithEvents& sender, const NumberEventArgs& e)
 class Functor
 {
     public:
-        auto operator ()(ObjectWithEvents& sender, const NumberEventArgs& e) -> void
+        auto operator ()(ObjectWithEvents& sender, NumberEventArgs& e) -> void
         {
             sender.value2(e.value() * 2);
+            // halt further processing
+            e.setHalt();
         }
 };
 int main()
@@ -80,22 +82,27 @@ int main()
     Functor ftor;
     AnotherObject anObject;
     owe.event1 += func;
+    // note that ftor halts calls of delegate functions after this one
     owe.event1 += ftor;
     owe.event1 += { owe, &ObjectWithEvents::setValue1 };
     owe.event1 += { anObject, &AnotherObject::setValue4 };
     owe.event2 += [](Object&, const EventArgs&) { std::cout << "From running event2\n"; };
 
-    owe.onEvent2(EventArgs());
-    owe.onEvent1(NumberEventArgs(4));
+    EventArgs args;
+    NumberEventArgs nea(4);
+    owe.onEvent2(args);
+    owe.onEvent1(nea);
     std::cout << "All 4 values have been set:\n";
     owe.print();
     // remove setting of second value
+    // this also removed halt, so ObjectWithEvents::setValue1 and AnotherObject::setValue4
+    // will now be called.
     owe.event1 -= ftor;
-    // remove setting of fourth value
-    owe.event1 -= { anObject, &AnotherObject::setValue4 };
-    owe.onEvent2(EventArgs());
+    EventArgs e2;
+    owe.onEvent2(e2);
     // only first and third values will be changed
-    owe.onEvent1(NumberEventArgs(7));   
+    NumberEventArgs nea2(7);
+    owe.onEvent1(nea2);   
     std::cout << "Only the first and third values are set after two std::functions are";
     std::cout << " removed from event1\n";
     owe.print();

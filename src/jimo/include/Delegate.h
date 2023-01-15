@@ -354,7 +354,7 @@ namespace jimo
             }
             /// @brief Invokes the functions in the current Delegate object.
             /// @return The value returned from executing the last function in the Delegate object.
-            result_t operator ()(arguments_t... args) const
+            virtual result_t operator ()(arguments_t... args) const
             {
                 if (m_data->functions.empty())
                 {
@@ -384,7 +384,7 @@ namespace jimo
                     return functions[functions.size() -1](args...);
                 }
             }
-        private:
+        protected:
             static bool are_equal(const function_t& left, const function_t& right)
             {
                 return left.target_type() == right.target_type() && 
@@ -404,6 +404,7 @@ namespace jimo
                 std::vector<function_t> functions;
             };
             std::shared_ptr<data> m_data = std::make_shared<data>();
+        public:
             std::mutex m_functionsLock;
     };
 }

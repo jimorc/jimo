@@ -154,14 +154,15 @@ namespace jimo::timing
                     }
                     if (m_status == TimerStatus::Running)
                     {
-                        onTick(TimerEventArgs<clock_t>());
+                        TimerEventArgs<clock_t> tea;
+                        onTick(tea);
                         m_timeToFireEvent += m_interval;
                         --m_timerCount;
                     }
                 }
                 m_status = TimerStatus::Stopped;
             }
-            void onTick(const TimerEventArgs<clock_t>& e)
+            void onTick(TimerEventArgs<clock_t>& e)
             {
                 tick(*this, e);
             }
