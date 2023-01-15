@@ -24,10 +24,12 @@ and type the following:
 The following is sample output from the program.
 
 ```
+Before events are invoked:
+ObjectWithEvents: 0, 0, 0, 0
 From running event2
-All 4 values have been set:
-ObjectWithEvents: 1, 8, 4, 16
+Only the second and third values are set because event processing is halted after the second value is set:
+ObjectWithEvents: 0, 8, 4, 0
 From running event2
-Only the first and third values are set after two std::functions are removed from event1
-ObjectWithEvents: 4, 8, 7, 16
+The second value will not be changed after ftor is removed from event1
+ObjectWithEvents: 4, 8, 7, 19
 ```

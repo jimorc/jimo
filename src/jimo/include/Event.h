@@ -8,7 +8,6 @@
 #include "EventHandler.h"
 #include <concepts>
 #include <type_traits>
-#include <functional>
 
 namespace jimo
 {
@@ -34,7 +33,11 @@ namespace jimo
             virtual auto equals(const Event& other) const noexcept -> bool
             {
                 return *this == other;
+            }virtual void invoke(sender_t& sender, eventArgs_t& e)
+            {
+                operator ()(sender, e);
             }
+            
             virtual void operator ()(sender_t& sender, eventArgs_t& e)
             {
                 if (EventHandler<sender_t, eventArgs_t>::m_data->functions.empty())

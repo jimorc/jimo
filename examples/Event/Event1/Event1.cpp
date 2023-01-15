@@ -35,11 +35,11 @@ class ObjectWithEvents : public Object
         }
         auto onEvent1(NumberEventArgs& e) noexcept -> void
         {
-            event1(*this, e);
+            std::invoke(event1, *this, e);
         }
         auto onEvent2(EventArgs& e) noexcept -> void
         {
-            std::invoke(event2, *this, e);
+            event2.invoke(*this, e);
         }
         auto print() const noexcept -> void
         {
@@ -87,12 +87,15 @@ int main()
     owe.event1 += { owe, &ObjectWithEvents::setValue1 };
     owe.event1 += { anObject, &AnotherObject::setValue4 };
     owe.event2 += [](Object&, const EventArgs&) { std::cout << "From running event2\n"; };
+    std::cout << "Before events are invoked:\n";
+    owe.print();
 
     EventArgs args;
     NumberEventArgs nea(4);
     owe.onEvent2(args);
     owe.onEvent1(nea);
-    std::cout << "All 4 values have been set:\n";
+    std::cout << "Only the second and third values are set because event processing";
+    std::cout << " is halted after the second value is set:\n";
     owe.print();
     // remove setting of second value
     // this also removed halt, so ObjectWithEvents::setValue1 and AnotherObject::setValue4
@@ -100,10 +103,10 @@ int main()
     owe.event1 -= ftor;
     EventArgs e2;
     owe.onEvent2(e2);
-    // only first and third values will be changed
+    // The second value will not be change
     NumberEventArgs nea2(7);
     owe.onEvent1(nea2);   
-    std::cout << "Only the first and third values are set after two std::functions are";
+    std::cout << "The second value will not be changed after ftor is";
     std::cout << " removed from event1\n";
     owe.print();
 }

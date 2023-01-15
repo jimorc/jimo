@@ -38,7 +38,7 @@ class Publisher : public Object
     protected:
         void onCustomEvent(CustomEventArgs& e)
         {
-            customEvent(*this, e);
+            customEvent.invoke(*this, e);
         }
         void onGenericEvent(EventArgs& e)
         {
