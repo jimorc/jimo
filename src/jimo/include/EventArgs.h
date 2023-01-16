@@ -77,9 +77,10 @@ namespace jimo
             /// [Events discussion](https://github.com/jimorc/jimo/blob/main/docs_doxygen/events.md)
             /// for more information.
             bool halt() const noexcept { return m_halt; }
-            /// @brief Set the halt value to true. Call EventArgs::halt() to determine
-            /// if additional functions in the event list should be called.
-            void setHalt() noexcept { m_halt = true; }
+            /// @brief Set the halt value.
+            /// @param halt true to stop calling the event handlers that were added after
+            /// this one, false to continue calling the added event handlers.
+            void halt(bool halt) noexcept { m_halt = halt; }
         private:
             bool m_halt{ false };
     };

@@ -73,7 +73,7 @@ class Functor
         {
             sender.value2(e.value() * 2);
             // halt further processing
-            e.setHalt();
+            e.halt(true);
         }
 };
 int main()
