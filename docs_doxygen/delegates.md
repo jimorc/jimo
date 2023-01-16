@@ -208,7 +208,7 @@ WorkerClass object;
 Worker worker { object, &WorkerClass::doWork };
 // or alternatively
 // Worker worker;
-// worker += object, &WorkerClass::doWork };
+// worker += { object, &WorkerClass::doWork };
 ```
 This is called using a named method. Delegates constructed with named methods can
 encapsulate either a static method or instance method. However, in a situation where
@@ -228,9 +228,92 @@ the lambda cannot be removed by repeating the lambda in a Delegate::operator-= c
 The following is a simple example of declaring and using a Delegate. Notice that both the
 Delegate, <code>ProcessTwoNumbers</code>, and the associated method, 
 <code>multiplyNumbers</code> have the same signature:
-@include Delegate/Delegate3/Delegate3.cpp
+```
+#include "Delegate.h"
+#include <iostream>
+
+using namespace jimo;
+
+// Declare ProcessTwoNumbers Delegate
+using ProcessTwoNumbers = Delegate<void, int, double>;
+
+class MathClass
+{
+    public:
+        void multiplyNumbers(int x, double y)
+        {
+            std::cout << x * y;
+        }
+};
+
+int main()
+{
+    MathClass mathClass;
+    ProcessTwoNumbers delegate { mathClass, &MathClass::multiplyNumbers };
+    // Invoke Delegate object
+    std::cout << "Invoking the delegate using 'multiplyNumbers':\n";
+    for (int i = 1; i <= 5; ++i)
+    {
+        delegate(i, 3);
+        std::cout << ' ';
+    }
+    std::cout << '\n';
+}
+
+/* Output:
+ Invoking the delegate using 'multiplyNumbers':
+ 3 6 9 12 15
+ */
+ ```
 
 ### Example 2
 In the following example, one Delegate is mapped to a function, a functor, a static
 method, an instance method, and a lambda.
-@include Delegate/Delegate2/Delegate2.cpp
+```
+#include <iostream>
+#include "Delegate.h"
+
+using namespace jimo;
+
+using Functions = Delegate<void>;
+
+void func()
+{
+    std::cout << "A message from func\n";
+}
+
+class Functor
+{
+    public:
+        void operator ()() { std::cout << "A message from a functor\n";}
+};
+
+class AClass
+{
+    public:
+        static void staticMethod() { std::cout << "A message from a static method\n"; }
+        void instanceMethod() { std::cout << "A message from an instance method\n"; }
+};
+
+int main()
+{
+    Functor functor;
+    AClass aClass;
+    Functions functions { func };
+    Functions functions2 { aClass, &AClass::instanceMethod };
+    functions += functor;
+    functions += AClass::staticMethod;
+    functions += functions2;
+    functions += []() { std::cout << "A message from a lambda\n"; };
+
+    functions();
+}
+
+/* Output:
+ A message from func
+ A message from a functor
+ A message from a static method
+ A message from an instance method
+ A message from a lambda
+ */
+ ```
