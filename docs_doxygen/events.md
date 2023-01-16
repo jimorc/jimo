@@ -30,28 +30,28 @@ void handleCustomEvent(Object& sender, const customEventArgs& e)
     // Do something useful
 }
 ```
-2. Use the addition assignment operator to attach an event handler to the event. In the
-following example, assume that an object named <code>publisher</code> has an event named 
-<code>raiseCustomEvent</code>. Note that the *Subscriber* class needs a reference to the 
-<code>publisher</code> object in order to subscribe to its events:
+2. Use the addition assignment operator `+=` to attach an event handler to the event. In the
+following example, assume that an object named `publisher` has an event named 
+`customEvent`. Note that the *Subscriber* class needs a reference to the 
+`publisher` object in order to subscribe to its events:
 ```
-publisher.raiseCustomEvent += { *this, &Subscriber::handleCustomEvent };
+publisher.customEvent += { *this, &Subscriber::handleCustomEvent };
 ```
 or
 ```
-publisher.raiseCustomEvent += CustomEventHandler(*this, &Subscriber::handleCustomEvent);
+publisher.customEvent += CustomEventHandler(*this, &Subscriber::handleCustomEvent);
 ```
 ### To Subscribe to Events by Using a Lambda Expression
 If you don't have to unsubscribe from an event later, you can use the addition assignment
-operator <code>+=</code> to attach a 
+operator `+=` to attach a 
 [lambda expression](https://en.cppreference.com/w/cpp/language/lambda) as an event handler.
-In the following example, assume that an object named <code>publisher</code> has an event 
-named <code>raiseCustomEvent</code> and that a <code>CustomEventArgs</code> class has also 
+In the following example, assume that an object named `publisher` has an event 
+named `customEvent` and that a `CustomEventArgs` class has also 
 been defined to carry some
-kind of specialized event information. Note that a <code>subscriber</code> object needs a 
-reference to <code>publisher</code> in order to subscribe to its events.
+kind of specialized event information. Note that a `subscriber` object needs a 
+reference to `publisher` in order to subscribe to its events.
 ```
-publisher.raiseCustomEvent += [](Object& sender, const CustomEventArgs& e) {
+publisher.customEvent += [](Object& sender, const CustomEventArgs& e) {
     std::string s = sender.toString() + " " + e.toString();
     std::cout << s << std::endl; }
 ```
@@ -70,20 +70,20 @@ destroy a subscriber object. Until you unsubscribe from an event, the multicast 
 that underlies the event in the publishing object has a reference to the Delegate that
 encapsulates the subscriber's event handler.
 ### To Unsubscribe from an Event
-Use the subtraction assignment operator <code>-=</code> to unsubscribe from an event. Assuming you 
+Use the subtraction assignment operator `-=` to unsubscribe from an event. Assuming you 
 have used the code from the section 
 *How to Subscribe to and Unsubscribe from Events*
-to subscribe to <code>raiseCustomEvent</code>, you can unsubscribe from the event as
+to subscribe to `customEvent`, you can unsubscribe from the event as
  follows:
 ```
-publisher.raiseCustomEvent -= { *this, &Subscriber::handleCustomEvent };
+publisher.customEvent -= { *this, &Subscriber::handleCustomEvent };
 ```
 or
 ```
-publisher.raiseCustomEvent -= CustomEventHandler(*this, &Subscriber::handleCustomEvent);
+publisher.customEvent -= CustomEventHandler(*this, &Subscriber::handleCustomEvent);
 ```
 When all subscribers have unsubscribed from an event, the event instance in thea *Publisher*
-class obejct is set to empty.
+class object is set to empty.
 ## How to Publish Events that Conform to jimo Guidelines
 The following procedure demonstrates how to add events that follow the standard jimo
 pattern to your classes and structs. All events in the jimo library are based on the
@@ -126,18 +126,59 @@ Delegate. You do not have to declare the Delegate because it is already declared
 jimo namespace that is included when you create your project. Add the following code to your
 *Publisher* class:
 ```
-jimo::Event<Publisher, jimo::EventHandler> raiseCustomEvent;
+jimo::Event<Publisher, jimo::EventHandler> customEvent;
 ```
-where *Publisher* is the name of the class that contains the *raiseCustomEvent* event.
+where *Publisher* is the name of the class that contains the `customEvent` event.
 
-b. If you are using a custom class derived from jimo::EventArgs, declare your event
+b. If you are using a custom class derived from `jimo::EventArgs`, declare your event
 inside your *Publisher* class and use your Delegate from step 2 as the type.
 ```
-jimo::Event<Publisher, CustomEventHandler> raiseCustomEvent;
+jimo::Event<Publisher, CustomEventHandler> customEvent;
 ```
+## Halting Further Processing of Event Handlers
+During the processing of an event handler, you may determine that additional event handlers
+should not be executed. One example of this in a GUI framework is when an event is passed
+up a chain of controls and containers until the event is processed. Once the event is
+handled, a flag is set in the EventArgs object to stop further event handler calls in the
+chain. 
+
+The jimo::Event class supports this through the jimo::EventArgs class. Here is a short
+example:
+```
+class AClass
+{
+    public:
+        void method1(Publisher& sender, EventArgs& e) { // do something }
+        void method2(Publisher& sender, EventArgs& e)
+        {
+            // do something that determines further event handlers should not be called
+            e.halt(true);   // set flag to not call other event handlers
+        }
+        void method3(Publisher& sender, EventArgs& e) { // do something }
+};
+class Publisher : public Object
+{
+    public:
+        jimo::Event<Publisher, EventArgs> anEvent;
+        void onEvent(EventArgs& args) { anEvent(*this, args); }
+};
+int main()
+{
+    AClass aClass;
+    Publisher publisher;
+    publisher.anEvent += { aClass, &AClass::method1 };
+    publisher.anEvent += { aClass, &AClass::method2 };
+    publisher.anEvent += { aClass, &AClass::method3 };
+    EventArgs eventArgs;
+    publisher.onEvent(eventArgs);
+}
+```
+Methods AClass::method1 and AClass::method2 will execute, but Aclass::method3 will not be
+called because AClass::method2 set the halt flag in the EventArgs object.
+
 ## Example
 The following example demonstrates the previous steps using both a custom EventArgs class
-and a generic EventArgs class:
+and a generic EventArgs class. The halt flag is never set in this example:
 ```
 #include <iostream>
 #include "Event.h"
@@ -252,3 +293,6 @@ int main()
  sub2 received generic message
  */
 ```
+## See Also
+* [Event1](https://github.com/jimorc/jimo/tree/main/examples/Event/Event1)
+* [Timer1](link to be added)
