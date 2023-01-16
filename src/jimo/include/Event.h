@@ -46,15 +46,15 @@ namespace jimo
             /// @param e an event args object. It must be derived from EventArgs.
             virtual void operator ()(sender_t& sender, eventArgs_t& e)
             {
-                if (EventHandler<sender_t, eventArgs_t>::m_data->functions.empty())
+                if (EventHandler<sender_t, eventArgs_t>::functions().empty())
                 {
                     return;
                 }
                 std::vector<EventHandler<sender_t, eventArgs_t>::function_t> functions;
                 auto& event = const_cast<Event&>(*this);
                 {
-                    std::lock_guard<std::mutex> lock(event.m_functionsLock);
-                    functions = event.m_data->functions;
+                    std::lock_guard<std::mutex> lock(event.functionsLock());
+                    functions = event.functions();
                 }
                 for (size_t index = 0; index < functions.size(); ++index)
                 {

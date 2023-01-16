@@ -235,7 +235,7 @@ namespace jimo
             /// @return Delegate object that contains a copy of the Delegates in the copied object.
             Delegate& operator =(const Delegate& other)
             {
-                std::lock_guard<std::mutex> lock(m_functionsLock);
+                std::lock_guard<std::mutex> lock(functionsLock());
                 m_data->functions = other.m_data->functions;
                 return *this;
             }
@@ -244,7 +244,7 @@ namespace jimo
             /// @return Delegate object that contains the Delegates in the moved object.
             Delegate& operator =(Delegate&& other)
             {
-                std::lock_guard<std::mutex> lock(m_functionsLock);
+                std::lock_guard<std::mutex> lock(functionsLock());
                 m_data->functions = other.m_data->functions;
                 other.m_data->functions.clear();
                 return *this;
@@ -252,7 +252,7 @@ namespace jimo
             /// @brief Remove all functions from the delegate
             void clear()
             {
-                std::lock_guard<std::mutex> lock(m_functionsLock);
+                std::lock_guard<std::mutex> lock(functionsLock());
                 m_data->functions.clear();
             }
             /// @brief Return if the delegate is empty.
@@ -282,7 +282,7 @@ namespace jimo
                 // effectively making them const.
                 auto& delegate = const_cast<Delegate&>(*this);
                 auto& oth = const_cast<Delegate&>(other); 
-                std::scoped_lock lock(delegate.m_functionsLock, oth.m_functionsLock);
+                std::scoped_lock lock(delegate.functionsLock(), oth.functionsLock());
                 if (delegate.size() != oth.size())
                 {
                     return false;
@@ -313,7 +313,7 @@ namespace jimo
             /// the original Delegate plus the function specified by the parameter.
             Delegate& operator +=(const function_t& function)
             {
-                std::lock_guard<std::mutex> lock(m_functionsLock);
+                std::lock_guard<std::mutex> lock(functionsLock());
                 combine(function);
                 return *this;
             }
@@ -333,7 +333,7 @@ namespace jimo
             /// in the original Delegate object minus the function specified by the parameter.
             Delegate& operator -=(const function_t& function)
             {
-                std::lock_guard<std::mutex> lock(m_functionsLock);
+                std::lock_guard<std::mutex> lock(functionsLock());
                 std::erase(m_data->functions, Delegate(function));
                 return *this;
             }
@@ -344,7 +344,7 @@ namespace jimo
             /// specified by the parameter
             Delegate& operator -=(const Delegate& delegate)
             {
-                std::lock_guard<std::mutex> lock(m_functionsLock);
+                std::lock_guard<std::mutex> lock(functionsLock());
                 for (const auto& function : delegate.m_data->functions)
                 {
                     std::erase(m_data->functions, Delegate(function));
@@ -368,7 +368,7 @@ namespace jimo
                     // changes are made to this, so on exit, no changes have been made
                     // to this Delegate.
                     auto& delegate = const_cast<Delegate&>(*this);
-                    std::lock_guard<std::mutex> lock(delegate.m_functionsLock);
+                    std::lock_guard<std::mutex> lock(delegate.functionsLock());
                     functions = delegate.m_data->functions;
                 }
                 for (size_t index = 0; index < functions.size() - 1; ++index)
@@ -385,6 +385,22 @@ namespace jimo
                 }
             }
         protected:
+            /// @brief Retrieve the delegate functions.
+            ///
+            /// This method is provided so that derived classes can access the functions.
+            /// @return functions stored in this Delegate.
+            std::vector<function_t>& functions() { return m_data->functions; }
+            /// @brief REetrieve the delegate functions.
+            ///
+            /// This method is provided so that derived classes can access the functions.
+             /// @return functions stored in this Delegate.
+            std::vector<function_t>& functions() const { return m_data->functions; }
+            /// @brief Retrieve the functionsLock mutex.ved classes can access the mutex.
+            ///
+            /// This method is provided so that derived classes can access the mutex.
+            /// @return the functionsLock mutex.
+            std::mutex& functionsLock() { return m_functionsLock; }
+        private:
             static bool are_equal(const function_t& left, const function_t& right)
             {
                 return left.target_type() == right.target_type() && 
@@ -393,7 +409,7 @@ namespace jimo
             }
             void combine(const Delegate& other)
             {
-                std::ranges::copy(other.m_data->functions, std::back_inserter(m_data->functions));
+                std::ranges::copy(other.functions(), std::back_inserter(functions()));
             }
             void combine(const function_t& function)
             {
@@ -404,7 +420,7 @@ namespace jimo
                 std::vector<function_t> functions;
             };
             std::shared_ptr<data> m_data = std::make_shared<data>();
-        public:
             std::mutex m_functionsLock;
+            
     };
 }
