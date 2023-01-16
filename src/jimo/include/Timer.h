@@ -22,6 +22,7 @@ namespace jimo::timing
         /// @brief Timer has stopped running.
         Stopped,
     };
+    /// @brief A class to schedule events at specified times or intervals.
     ///
     /// This class allows you to fire events once immediately, once sometime in the future,
     /// or multiple times starting immediately or sometime in the future, and multiple
@@ -44,6 +45,12 @@ namespace jimo::timing
             /// @note The event handlers attached to this event are executed on a different
             /// thread than the ones that added handlers to this event.
             Event<Timer, TimerEventArgs<clock_t>> tick; 
+            /// @brief stopped event.
+            ///
+            /// This is the event that fires when the timer "stops". A timer stops when
+            /// the number of ticks specified by the `run` call have fired, or when
+            /// `stop` is called.
+            Event<Timer, TimerEventArgs<clock_t>> stopped;
             /// @brief Run the timer to fire once at the specified start time.
             /// @param startTime The time at which to execute the tick event handlers.
             /// If this time is *now* or in the past, the tick event fires immediately.
@@ -161,10 +168,16 @@ namespace jimo::timing
                     }
                 }
                 m_status = TimerStatus::Stopped;
+                TimerEventArgs<clock_t> tea;
+                onStopped(tea);
             }
             void onTick(TimerEventArgs<clock_t>& e)
             {
                 tick(*this, e);
+            }
+            void onStopped(TimerEventArgs<clock_t>& e)
+            {
+                stopped(*this, e);
             }
             TimerStatus m_status;
             long long m_timerCount { 0 };

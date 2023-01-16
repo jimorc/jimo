@@ -170,3 +170,16 @@ TEST(TimerTests, TestRunDefaultStartTime)
     std::this_thread::sleep_for(150ms);
     ASSERT_EQ(1, count);
 }
+
+TEST(TimerTests, TestStoppedEvent)
+{
+    using steady = std::chrono::steady_clock;
+    int count = 0;
+    Timer<> timer;
+    timer.stopped +=  [&count](Timer<>&, const TimerEventArgs<steady>&) {
+        ++count;
+    };
+    timer.run();
+    std::this_thread::sleep_for(150ms);
+    ASSERT_EQ(1, count);
+}
