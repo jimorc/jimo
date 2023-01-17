@@ -25,7 +25,7 @@ jimo::EventArgs base class.
 event. For example, for an event that is based on the jimo::EventHandler Delegate type, the
 following code represents the method stub:
 ```
-void handleCustomEvent(Object& sender, const customEventArgs& e)
+void handleCustomEvent(Object& sender, customEventArgs& e)
 {
     // Do something useful
 }
@@ -51,7 +51,7 @@ been defined to carry some
 kind of specialized event information. Note that a `subscriber` object needs a 
 reference to `publisher` in order to subscribe to its events.
 ```
-publisher.customEvent += [](Object& sender, const CustomEventArgs& e) {
+publisher.customEvent += [](Object& sender, CustomEventArgs& e) {
     std::string s = sender.toString() + " " + e.toString();
     std::cout << s << std::endl; }
 ```
@@ -90,7 +90,7 @@ pattern to your classes and structs. All events in the jimo library are based on
 [jimo::EventHandler] Delegate, which is defined as follows:
 ```
 template<typename sender_t, typename eventArgs_t>
-using EventHandler = Delegate<void, sender_t&, const eventArgs_t&>;
+using EventHandler = Delegate<void, sender_t&, eventArgs_t&>;
 ```
 Although events in classes that you define can be based on any valid Delegate type, even
 Delegates that return a value, it is recommended that you base your events on the jimo
