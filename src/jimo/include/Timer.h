@@ -120,6 +120,11 @@ namespace jimo::timing
                 if (m_status == TimerStatus::NeverStarted || 
                     m_status == TimerStatus::Stopped)
                 {
+                    if (m_timerThread && m_timerThread->joinable())
+                    {
+                        m_timerThread->join();
+                        m_timerThread.release();
+                    }
                     m_status = TimerStatus::Running;
                     m_timerCount = count;
                     m_interval = timerInterval;

@@ -142,18 +142,17 @@ TEST(TimerTests, TestRunAlreadyRunningTimer)
 
 TEST(TimerTests, TestRunStoppedTimer)
 {
-    using steady = std::chrono::steady_clock;
-    Timer<steady> timer;
-    timer.run(1s);
+    using system_clock = std::chrono::system_clock;
+    Timer<system_clock> timer;
+    timer.run(10s, 3);
     timer.stop();
     try
     {
-        timer.run(steady::now());
+        timer.run(system_clock::now());
     }
-    catch(const TimerException& e)
+    catch(const std::exception& e)
     {
-        ASSERT_STREQ("Timer is already running.", e.what());
-        return;
+        FAIL() << e.what();
     }
     SUCCEED();
 }
