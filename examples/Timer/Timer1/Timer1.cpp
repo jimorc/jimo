@@ -22,7 +22,7 @@ int main()
     try
     {
         // run timer once, now. No exception should be thrown.
-        timer2.tick += [](Timer<utc>&, const TimerEventArgs<utc>&) {
+        timer2.tick += [](Timer<utc>&, TimerEventArgs<utc>&) {
                 std::cout << "tick\n";
             };
         timer2.run(utc::now());
@@ -34,7 +34,7 @@ int main()
     Timer<steady> timer3;
     try
     {
-        timer3.tick += [](Timer<steady>&, const TimerEventArgs<steady>&) {
+        timer3.tick += [](Timer<steady>&, TimerEventArgs<steady>&) {
             std::cout << "tock\n";
         };
         // run timer forever at 250ms intervals
@@ -51,7 +51,7 @@ int main()
     Timer timer4;
     try
     {
-        timer4.tick += [](Timer<>&, const TimerEventArgs<>&) {
+        timer4.tick += [](Timer<>&, TimerEventArgs<>&) {
             std::cout << "tickle\n";
         };
         // fire timer twice at 100ms intervals
@@ -66,8 +66,11 @@ int main()
     Timer<steady> timer5;
     try
     {
-        timer5.tick += [](Timer<steady>&, const TimerEventArgs<>&) {
+        timer5.tick += [](Timer<steady>&, TimerEventArgs<steady>&) {
             std::cout << "tick, tock\n";
+        };
+        timer5.stopped += [](Timer<steady>&, TimerEventArgs<steady>& e) {
+            std::cout << "Timer stopped at " << e.time().time_since_epoch().count() << '\n';
         };
         // fire timer 3 times at 100ms intervals starting at specified time
         timer5.run(steady::now() + 250ms, 100ms, 3);
