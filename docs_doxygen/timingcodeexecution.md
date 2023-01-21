@@ -61,7 +61,7 @@ int main()
 ```
 As you can see, this code is a bit cleaner, but there is no great advantage to using
 the StopWatch class.
-### Timing Each Execution of `timeThisFunction` using Standard Templates Library
+### Timing Each Execution of for loop Using Standard Templates Library
 Here is code to time each execution:
 ```
 int main()
@@ -77,8 +77,8 @@ int main()
                 std::chrono::steady_clock.now();
         }
         int result = timeThisFunction();
-        executionEndTimes.emplace_back(std::chrono::steady_clock::now());
         // do something with result
+        executionEndTimes.emplace_back(std::chrono::steady_clock::now());
     }
     for (int timeIndex = 0, timeIndex < 10; ++timeIndex)
     {
@@ -90,7 +90,7 @@ int main()
     }
 }
 ```
-### Timing Each Execution of `timeThisFunction` using StopWatch
+### Timing Each Execution of for loop Using StopWatch
 Here is the same functionality using jimo::timing::StopWatch:
 ```
 int main()
@@ -105,8 +105,8 @@ int main()
             watch.start();
         }
         int result = timeThisFunction();
-        watch.startNextLap();
         // do something with result
+        watch.startNextLap();
     }
     watch.stopWithoutSavingTime();
     auto durations = watch.getLapTimes();
