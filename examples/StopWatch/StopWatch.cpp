@@ -10,23 +10,23 @@ int main()
 {
     try
     {
-        StopWatch watch;
-        watch.Start();
+        StopWatch<std::chrono::steady_clock> watch;
+        watch.start();
         // do something that you want to time
         std::this_thread::sleep_for(500us);
-        watch.Stop();
-        auto duration = watch.GetDuration();
+        watch.stop();
+        auto duration = watch.getDuration();
         std::cout << "Task took " << duration.count() << "ns\n";
 
-        watch.Start();
+        watch.start();
         // do something that you want to time laps for
         for (int i = 0; i < 10; ++i)
         {
             std::this_thread::sleep_for(200us);
-            watch.StartNextLap();
+            watch.startNextLap();
         }
-        watch.StopWithoutSavingTime();
-        auto durations = watch.GetLapTimes();
+        watch.stopWithoutSavingTime();
+        auto durations = watch.getLapTimes();
         std::cout << "Here are the " << durations.size() << " lap times:\n";
         for (auto dur : durations)
         {
@@ -34,7 +34,7 @@ int main()
             std::cout << "    " << lapTime << "us\n";
         }
         // this throws exception
-        watch.Stop();
+        watch.stop();
     }
     catch (StopWatchException& e)
     {

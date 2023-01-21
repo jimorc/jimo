@@ -8,10 +8,10 @@ using namespace std::chrono_literals;
 TEST(StopWatchTests, TestStopWatch)
 {
     StopWatch watch;
-    watch.Start();
+    watch.start();
     std::this_thread::sleep_for(200ms);
-    watch.Stop();
-    std::chrono::duration duration = watch.GetDuration();
+    watch.stop();
+    std::chrono::duration duration = watch.getDuration();
     ASSERT_GE(duration, 200'000'000ns);
     ASSERT_GE(duration, 200ms);
 }
@@ -19,14 +19,14 @@ TEST(StopWatchTests, TestStopWatch)
 TEST(StopWatchTests, TestStartAlreadyRunningWatch)
 {
     StopWatch watch;
-    watch.Start();
+    watch.start();
     try
     {
-        watch.Start();
+        watch.start();
     }
     catch (StopWatchException& e)
     {
-        ASSERT_STREQ(e.what(), "Attempting to start a stop watch that is already running!");
+        ASSERT_STREQ(e.what(), "Attempting to start a StopWatch that is already running!");
         return;
     }
     FAIL();
@@ -37,7 +37,7 @@ TEST(StopWatchTests, TestStopStopWatchThatIsNotRunning)
     StopWatch watch;
     try
     {
-        watch.Stop();
+        watch.stop();
     }
     catch (StopWatchException& e)
     {
@@ -50,11 +50,11 @@ TEST(StopWatchTests, TestStopStopWatchThatIsNotRunning)
 TEST(StopWatchTests, TestStopAlreadyStopedStopWatch)
 {
     StopWatch watch;
-    watch.Start();
-    watch.Stop();
+    watch.start();
+    watch.stop();
     try
     {
-        watch.Stop();
+        watch.stop();
     }
     catch (StopWatchException& e)
     {
@@ -67,10 +67,10 @@ TEST(StopWatchTests, TestStopAlreadyStopedStopWatch)
 TEST(StopWatchTests, TestGetDurationFromRunningStopWatch)
 {
     StopWatch watch;
-    watch.Start();
+    watch.start();
     try
     {
-        [[maybe_unused]] auto duration = watch.GetDuration();
+        [[maybe_unused]] auto duration = watch.getDuration();
     }
     catch (StopWatchException& e)
     {
@@ -86,7 +86,7 @@ TEST(StopWatchTests, TestGetDurationFromStopWatchthatHasNotRun)
     StopWatch watch;
     try
     {
-        [[maybe_unused]] auto duration = watch.GetDuration();
+        [[maybe_unused]] auto duration = watch.getDuration();
     }
     catch (StopWatchException& e)
     {
@@ -100,13 +100,13 @@ TEST(StopWatchTests, TestGetDurationFromStopWatchthatHasNotRun)
 TEST(StopWatchTests, TestStartNextLap)
 {
     StopWatch watch;
-    watch.Start();
+    watch.start();
     std::this_thread::sleep_for(5ms);
-    watch.StartNextLap();
+    watch.startNextLap();
     std::this_thread::sleep_for(10ms);
-    watch.Stop();
+    watch.stop();
 
-    auto lapTimes = watch.GetLapTimes();
+    auto lapTimes = watch.getLapTimes();
 
     ASSERT_EQ(lapTimes.size(), 2);
     ASSERT_GT(lapTimes[0], 5ms);
@@ -114,20 +114,20 @@ TEST(StopWatchTests, TestStartNextLap)
     ASSERT_GT(lapTimes[1], 10ms);
     ASSERT_LT(lapTimes[1], 200ms);
     auto totalLapTimes = lapTimes[0] + lapTimes[1];
-    ASSERT_EQ(totalLapTimes, watch.GetDuration());
+    ASSERT_EQ(totalLapTimes, watch.getDuration());
 }
 
 TEST(StopWatchTests, TestGetLapTimesNoStartNextLap)
 {
     StopWatch watch;
-    watch.Start();
+    watch.start();
     std::this_thread::sleep_for(10ms);
-    watch.Stop();
+    watch.stop();
 
-    auto lapTimes = watch.GetLapTimes();
+    auto lapTimes = watch.getLapTimes();
 
     ASSERT_EQ(lapTimes.size(), 1);
-    ASSERT_EQ(lapTimes[0], watch.GetDuration());
+    ASSERT_EQ(lapTimes[0], watch.getDuration());
 }
 
 TEST(StopWatchTests, TestStartNextLapWhenStopWatchNotStarted)
@@ -135,12 +135,12 @@ TEST(StopWatchTests, TestStartNextLapWhenStopWatchNotStarted)
     StopWatch watch;
     try
     {
-        watch.StartNextLap();
+        watch.startNextLap();
     }
     catch (StopWatchException& e)
     {
         ASSERT_STREQ(e.what(), 
-            "Cannot call StartNextLap for stop watch that is not running.");
+            "Cannot call startNextLap for stop watch that is not running.");
         return;
     }
     FAIL();
@@ -149,15 +149,15 @@ TEST(StopWatchTests, TestStartNextLapWhenStopWatchNotStarted)
 TEST(StopWatchTests, TestGetLapTimesWhenStopWatchIsRunning)
 {
     StopWatch watch;
-    watch.Start();
+    watch.start();
     try
     {
-        auto lapTimes = watch.GetLapTimes();
+        auto lapTimes = watch.getLapTimes();
     }
     catch (StopWatchException& e)
     {
         ASSERT_STREQ(e.what(), 
-            "Cannot retrieve lap times while stop watch is running");
+            "Cannot retrieve lap times while StopWatch is running");
         return;
     }
     catch (std::exception&)
@@ -172,12 +172,12 @@ TEST(StopWatchTests, TestGetLapTimesWhenStopWatchNeverRun)
     StopWatch watch;
     try
     {
-        auto lapTimes = watch.GetLapTimes();
+        auto lapTimes = watch.getLapTimes();
     }
     catch (StopWatchException& e)
     {
         ASSERT_STREQ(e.what(), 
-            "Cannot retrieve lap times. Stop watch never ran");
+            "Cannot retrieve lap times. StopWatch never ran");
         return;
     }
     catch (std::exception& )
@@ -190,23 +190,23 @@ TEST(StopWatchTests, TestGetLapTimesWhenStopWatchNeverRun)
 TEST(StopWatchTests, TestStartTwice)
 {
     StopWatch watch;
-    watch.Start();
-    watch.Stop();
+    watch.start();
+    watch.stop();
 
-    EXPECT_EQ(1, watch.GetLapTimes().size());
+    EXPECT_EQ(1, watch.getLapTimes().size());
 
-    watch.Start();
-    watch.Stop();
-    ASSERT_EQ(1, watch.GetLapTimes().size());
+    watch.start();
+    watch.stop();
+    ASSERT_EQ(1, watch.getLapTimes().size());
 }
 
 TEST(StopWatchTests, TestStopWithoutSavingTime)
 {
     StopWatch watch;
-    watch.Start();
-    watch.StartNextLap();
-    watch.StopWithoutSavingTime();
-    ASSERT_EQ(1, watch.GetLapTimes().size());
+    watch.start();
+    watch.startNextLap();
+    watch.stopWithoutSavingTime();
+    ASSERT_EQ(1, watch.getLapTimes().size());
 }
 
 TEST(StopWatchTests, TestStopWithoutSavingTimeBeforeStart)
@@ -214,12 +214,12 @@ TEST(StopWatchTests, TestStopWithoutSavingTimeBeforeStart)
     StopWatch watch;
     try
     {
-       watch.StopWithoutSavingTime();
+       watch.stopWithoutSavingTime();
     }
     catch (StopWatchException& e)
     {
         ASSERT_STREQ(e.what(), 
-            "StopWithoutSavingTime() being called before stop watch started");
+            "stopWithoutSavingTime() being called before stop watch started");
         return;
     }
     catch (std::exception&)

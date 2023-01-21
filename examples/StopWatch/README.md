@@ -39,3 +39,6 @@ Here are the 10 lap times:
     255us
 Attempting to stop a StopWatch that is not running.
 ```
+The times displayed above are from running this program on an M1 Pro Macbook Pro. Times
+reported on Windows 11 running in a virtual machine running on the same Macbook Pro were
+much longer.

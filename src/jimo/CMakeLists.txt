@@ -1,10 +1,8 @@
-set(CMAKE_WINDOWS_EXPORT_ALL_SYMBOLS ON)
+# set(CMAKE_WINDOWS_EXPORT_ALL_SYMBOLS ON)
 
-add_library(jimo
-    SHARED
-    src/StopWatch.cpp)
+add_library(jimo INTERFACE)
 
 target_include_directories(jimo
-    PUBLIC
+    INTERFACE
     include)
     
