@@ -4,6 +4,7 @@
 #pragma once
 
 #include <any>
+#include <type_traits>
 #include "Delegate.h"
 
 namespace jimo::threading
@@ -21,6 +22,48 @@ namespace jimo::threading
     requires std::is_enum_v<actionEnum_t>
     struct Action
     {
+        /// @brief Default constructor
+        Action() = default;
+        /// @brief Copy constructor
+        /// @param other The Action object to copy.
+        Action(const Action& other) noexcept
+            : action(other.action), actionData(other.actionData), 
+                actionCallback(other.actionCallback) {}
+        /// @brief Move constructor
+        /// @param other The Action object to move.
+        Action(Action&& other) noexcept
+            : action(std::move(other.action)), actionData(std::move(other.actionData)),
+                actionCallback(std::move(other.actionCallback)) 
+        {
+            other.action = {};
+            other.actionData = {};
+            other.actionCallback.clear();
+        }
+        /// @brief Destructor
+        virtual ~Action() = default;
+        /// @brief Copy equals operator
+        /// @param other The Action object to copy.
+        /// @return The copied Action object.
+        Action& operator =(const Action& other) noexcept
+        {
+            action = other.action;
+            actionData = other.actionData;
+            actionCallback = other.actionCallback;
+            return *this;
+        };
+        /// @brief Move equals operator
+        /// @param other The Action object to move.
+        /// @return The moved Action object.
+        Action& operator =(Action&& other) noexcept
+        {
+            action = other.action;
+            actionData = other.actionData;
+            actionCallback = other.actionCallback;
+            other.action = {};
+            other.actionData = {};
+            other.actionCallback.clear();
+            return *this;
+        }
         /// @brief The action that the ActionHandler or ThreadActionHandler is to perform.
         /// @note The action is defined in the actionHandler or ThreadActionHandler, not
         /// in the `Action` struct. Potentially, an action could be specified in the
@@ -30,6 +73,8 @@ namespace jimo::threading
         actionEnum_t action;
         /// @brief Data to be passed to the method in the ActionHandler or
         /// ThreadActionHandler.
+        /// @note The actionData type must be copyable and movable. If not, then a
+        /// compilation error will be generated when attempting to set this value.
         std::any actionData {};
         /// @brief Any callbacks that are to be called after the action is completed.
         jimo::Delegate<void, std::any> actionCallback;
