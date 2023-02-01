@@ -9,7 +9,7 @@ Delegate instance.
 Delegates are used to pass methods as arguments to other methods. Event handlers are methods
 that are invoked through Delegates. You can create a custom method and another class can
 call your method when a certain event occurs. For example, your custom method can be called
-for every [Timer](timer.md) tick event.
+for every [Timer] (link to be added) tick event.
 
 The following example shows a Delegate declaration representing functions that take two
 integers as parameters, and returns an integer:
