@@ -17,7 +17,9 @@ Any attempt to reuse a OnceTimer object throws an exception.
 
 ## Building jimo
 
-This library is being developed on MacOS 13 using C++20 and have just started porting it to Windows 11.
+While work on this library began on MacOS 13 using C++20, I have moved development to Windows 11 because MSVC has the most complete implementation of
+C++20. When development on Windows 11 using MSVC is completed, the library will be ported to Linux using gcc and then MacOS using Apple clang. When
+development on Windows 11 is completed, up-to-date building instructions will be provided.
 
 ### MacOS
 
