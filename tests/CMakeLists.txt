@@ -9,7 +9,8 @@ FetchContent_MakeAvailable(googletest)
 add_library(GTest::GTest INTERFACE IMPORTED)
 target_link_libraries(GTest::GTest INTERFACE gtest_main)
 
-add_executable(jimoTest 
+add_executable(jimoTest
+  ActionTests.cpp
   DelegateTests.cpp
   EventArgsTests.cpp
   EventTests.cpp
