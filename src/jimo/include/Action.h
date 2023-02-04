@@ -31,6 +31,28 @@ namespace jimo::threading
         /// had started with the default constructor.
         Action(actionEnum_t act, const std::any& data)
             : action(act), actionData(data) {}
+        /// @brief Constructor that defines an action, the data to pass to the handler,
+        /// and a callback to execute once the action has been handled.
+        /// @param act The action to perform.
+        /// @param data The data to pas to the action handler.
+        /// @param callback The callback function to execute once the action has been
+        /// executed.
+        /// @note The callback is not called automatically. It must be explicitly called
+        /// from within the action handler.
+        Action(actionEnum_t act, const std::any& data, 
+            const std::function<void(std::any)>& callback)
+            : action(act), actionData(data), actionCallback(callback) {}
+        /// @brief Constructor that defines an action, the data to pass to the handler,
+        /// and a callback to execute once the action has been handled.
+        /// @param act The action to perform.
+        /// @param data The data to pas to the action handler.
+        /// @param callbacks The callback functions to execute once the action has been
+        /// executed.
+        /// @note The callbacks are not called automatically. They must be explicitly called
+        /// from within the action handler.
+        Action(actionEnum_t act, const std::any& data, 
+            const jimo::Delegate<void, std::any>& callbacks)
+            : action(act), actionData(data), actionCallback(callbacks) {}
         /// @brief Copy constructor
         /// @param other The Action object to copy.
         Action(const Action& other) noexcept
@@ -71,19 +93,23 @@ namespace jimo::threading
             other.actionCallback.clear();
             return *this;
         }
-        /// @brief The action that the ActionHandler or ThreadActionHandler is to perform.
-        /// @note The action is defined in the actionHandler or ThreadActionHandler, not
+        /// @brief The action that the ActionHandler or threadedActionHandler is to perform.
+        /// @note The handler for the action is defined in the actionHandler or 
+        /// threadedActionHandler, not
         /// in the `Action` struct. Potentially, an action could be specified in the
         /// actionData, but there still must be some code defined that interprets the
         /// actionData to call that action. This is not the intended use of the Action
         /// struct.
         actionEnum_t action;
         /// @brief Data to be passed to the method in the ActionHandler or
-        /// ThreadActionHandler.
+        /// ThreadedActionHandler.
         /// @note The actionData type must be copyable and movable. If not, then a
         /// compilation error will be generated when attempting to set this value.
         std::any actionData {};
         /// @brief Any callbacks that are to be called after the action is completed.
+        /// @note The callbacks are not called automatically after the action handler is
+        /// executed. For the callbacks to be executed, the handler associated with this
+        /// action must call them explicitly.
         jimo::Delegate<void, std::any> actionCallback;
     };
 }
