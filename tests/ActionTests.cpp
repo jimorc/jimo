@@ -89,12 +89,21 @@ TEST(ActionTests, testMoveEquals)
     ASSERT_TRUE(action.actionCallback.empty());
 }
 
-TEST(ActionTests, testTwoArgsConstructor)
+
+TEST(ActionTests, testThreeArgsConstructor)
 {
     int value{};
-    Action<Actions> action(Actions::first, 4);
-    action.actionCallback += [&value](std::any val)
-    { value = std::any_cast<int>(val); };
-    action.actionCallback(3);
-    ASSERT_EQ(3, value);
+    Action<Actions> action(Actions::first, 4, [&value](std::any val)
+    { value = std::any_cast<int>(val); });
+    action.actionCallback(5);
+    ASSERT_EQ(5, value);
+
+    jimo::Delegate<void, std::any> callbacks;
+    callbacks += [&value](std::any val)
+    { ++value; };
+    callbacks += [&value](std::any val)
+    { value += 4; };
+    Action<Actions> action2(Actions::last, 4, callbacks);
+    action2.actionCallback(2);
+    ASSERT_EQ(10, value);
 }
