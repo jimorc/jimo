@@ -24,6 +24,13 @@ namespace jimo::threading
     {
         /// @brief Default constructor
         Action() = default;
+        /// @brief Constructor that defines an action and the data to pass to the handler.
+        /// @param act The action to perform.
+        /// @param data The data to pass to the action handler.
+        /// @note No callback is specified. This can be added just as you could if you
+        /// had started with the default constructor.
+        Action(actionEnum_t act, const std::any& data)
+            : action(act), actionData(data) {}
         /// @brief Copy constructor
         /// @param other The Action object to copy.
         Action(const Action& other) noexcept
@@ -40,7 +47,7 @@ namespace jimo::threading
             other.actionCallback.clear();
         }
         /// @brief Destructor
-        virtual ~Action() = default;
+        virtual ~Action() noexcept = default;
         /// @brief Copy equals operator
         /// @param other The Action object to copy.
         /// @return The copied Action object.

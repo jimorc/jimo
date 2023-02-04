@@ -88,3 +88,13 @@ TEST(ActionTests, testMoveEquals)
     ASSERT_FALSE(action.actionData.has_value());
     ASSERT_TRUE(action.actionCallback.empty());
 }
+
+TEST(ActionTests, testTwoArgsConstructor)
+{
+    int value{};
+    Action<Actions> action(Actions::first, 4);
+    action.actionCallback += [&value](std::any val)
+    { value = std::any_cast<int>(val); };
+    action.actionCallback(3);
+    ASSERT_EQ(3, value);
+}
