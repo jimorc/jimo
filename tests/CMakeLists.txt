@@ -11,6 +11,7 @@ target_link_libraries(GTest::GTest INTERFACE gtest_main)
 
 add_executable(jimoTest
   ActionTests.cpp
+  ActionHandlerTests.cpp
   DelegateTests.cpp
   EventArgsTests.cpp
   EventTests.cpp
