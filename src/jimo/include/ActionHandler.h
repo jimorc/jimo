@@ -42,6 +42,18 @@ namespace jimo::threading
     /// @tparam actionEnum_t The enumeration containing the various actions that can
     /// be handled by this ActionHandler
     /// @see ActionEnum concept
+    /// @note This handler class executes under the same thread as the run() method is 
+    /// called in.
+    /// The run() method is like a message processor function in a GUI program. It continues
+    /// to execute until either a `terminate` action is handled, or an exception is
+    /// thrown. Therefore, if there is only one thread within the program that contains
+    /// an object of this class, the `terminate` action must be queued from another handler 
+    /// within
+    /// this ActionHandler, or must be called from within the continuouslyRun() method.
+    /// If there is more than one thread in the program, then a `terminate` action could
+    /// potentially be queued from within one of the other threads.
+    /// @note This class is thread-safe. That is, no race conditions are present unless
+    /// they are introduced in the handlers added to any objects of this class.
     template <ActionEnum actionEnum_t>
     class ActionHandler
     {
