@@ -139,8 +139,8 @@ namespace jimo::threading
                             throw std::out_of_range(errMessage);
                         }
                     }
-                    if (m_runContinuously) continuouslyRun();
-                    else
+                   if (m_runContinuously) continuouslyRun();
+                   else
                     {
                         lock.lock();
                         if (!m_actionQueued) m_actionInQueue.wait(lock);
@@ -156,22 +156,47 @@ namespace jimo::threading
             /// method even if no continuous action is to be performed by the
             /// derived ActionHandler.
             virtual void continuouslyRun() = 0;
-        private:
-            void startContinuousRun(Action<actionEnum_t>&)
+            void runContinuousCallbacks(std::any data)
             {
+                m_runContinuousCallbacks(data);
+            }
+            virtual void saveContinuousActionCallback(Action<actionEnum_t>& action)
+            {
+                m_runContinuousCallbacks.clear();
+                if (action.actionData.type() == typeid(std::function<void(std::any)>))
+                {
+                    auto callback = std::any_cast<std::function<void(std::any)>>(
+                        action.actionData);
+                    m_runContinuousCallbacks += callback;
+                }
+                else if (action.actionData.type() == typeid(jimo::Delegate<void, std::any>))
+                {
+                    auto callbacks = std::any_cast<jimo::Delegate<void, std::any>>(
+                        action.actionData);
+                    m_runContinuousCallbacks += callbacks;
+                }
+            }
+        private:
+            void startContinuousRun(Action<actionEnum_t>& action)
+            {
+                saveContinuousActionCallback(action);
+                action.actionCallback(action.actionData);
                 m_runContinuously = true;
             }
-            void stopContinuousRun(Action<actionEnum_t>&)
+            void stopContinuousRun(Action<actionEnum_t>& action)
             {
+                action.actionCallback(action.actionData);
                 m_runContinuously = false;
             }
-            void terminateHandler(Action<actionEnum_t>&)
+            void terminateHandler(Action<actionEnum_t>& action)
             {
+                action.actionCallback(action.actionData);
                 m_terminate = true;
             }
             std::atomic_bool m_runContinuously {};
             std::atomic_bool m_actionQueued {};
             std::atomic_bool m_terminate {};
+            jimo::Delegate<void, std::any> m_runContinuousCallbacks;
             std::queue<Action<actionEnum_t>> m_actionQueue;
             std::mutex m_queueMutex;
             std::condition_variable m_actionInQueue {};
