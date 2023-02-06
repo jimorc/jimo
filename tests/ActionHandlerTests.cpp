@@ -2,6 +2,7 @@
 #include <thread>
 #include <chrono>
 #include "ActionHandler.h"
+#include "Delegate.h"
 
 using namespace jimo::threading;
 using namespace std::placeholders;
@@ -155,4 +156,62 @@ TEST(ActionHandlerTests, testBadRunContinuous)
         return;
     }
     FAIL() << "Failed to throw logic_error exception.";
+}
+
+TEST(ActionHandlerTests, testMainCallbacks)
+{
+    class TestActionHandler;
+    struct ContinuousData
+    {
+        std::any data;
+        TestActionHandler& handler;
+    };
+
+    class TestActionHandler : public ActionHandler<Actions>
+    {
+        public:
+            TestActionHandler() : ActionHandler<Actions>() {};
+        protected:
+            void continuouslyRun() override
+            {
+                std::this_thread::sleep_for(50ms);
+                ContinuousData cData { { ++m_counter }, *this };
+                runContinuousCallbacks(cData);
+            }
+        private:
+            int m_counter {};
+    };
+
+    int value {};
+    bool started {};
+    bool stopped {};
+    bool termed {};
+    auto startedContinuous = [&started](std::any){ 
+        started = true; };
+    auto stoppedContinuous = [&stopped](std::any){ stopped = true; };
+    auto terminated = [&termed](std::any){ termed = true; };
+    auto continuous = [&value, &stoppedContinuous, &terminated](std::any cData)
+        {
+            auto continuousData = std::any_cast<ContinuousData&>(cData);
+            value = std::any_cast<int>(continuousData.data);
+            if (value >= 5)
+            {
+                auto& handler = continuousData.handler;
+                Action<Actions> stop(Actions::stopContinuous, {}, stoppedContinuous);
+                handler.queueAction(stop);
+                Action<Actions> terminate(Actions::terminate, {}, terminated);
+                handler.queueAction(terminate);
+            }
+        };
+
+    TestActionHandler handler;
+    Action<Actions> continuousAction(Actions::runContinuous, jimo::Delegate<void, std::any>(
+        continuous), startedContinuous);
+    handler.queueAction(continuousAction);
+    handler.run();
+
+    ASSERT_GE(5, value);
+    ASSERT_TRUE(started);
+    ASSERT_TRUE(stopped);
+    ASSERT_TRUE(termed);
 }
