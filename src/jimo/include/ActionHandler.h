@@ -54,6 +54,12 @@ namespace jimo::threading
     /// potentially be queued from within one of the other threads.
     /// @note This class is thread-safe. That is, no race conditions are present unless
     /// they are introduced in the handlers added to any objects of this class.
+    ///
+    /// Here is a simple sample program that illustrates a possible use of this class.
+    /// Note that this is not a typical use of this class as there is only one thread
+    /// in this example. Once the run() method is entered, a `terminate` action must
+    /// be queued, or control never returns from run().
+    /// @include ActionHandler/ActionHandler1/ActionHandler1.cpp
     template <ActionEnum actionEnum_t>
     class ActionHandler
     {
@@ -156,10 +162,25 @@ namespace jimo::threading
             /// method even if no continuous action is to be performed by the
             /// derived ActionHandler.
             virtual void continuouslyRun() = 0;
+            /// @brief Run any callbacks that are registered with the run continuouly action.
+            ///
+            /// This method should be called from within your overridden `continuoulyRun()`
+            /// method.
+            /// @param data Any data that is to be passed to the callbacks.
             void runContinuousCallbacks(std::any data)
             {
                 m_runContinuousCallbacks(data);
             }
+            /// @brief Save the continuous run callbacks.
+            /// @param action The `startContinuousRun` Action object.
+            /// This Action object contains the callback or callbacks in the `actionData`
+            /// field.
+            /// @note This method is called when an actionEnum_t::startContinuousRun 
+            /// Action object
+            /// is processed. This is a virtual method so that you can change what
+            /// happens when the callbacks are saved. However, if you do override this
+            /// method, you probably want to also call this *base* method to ensure
+            /// that the callbacks are saved.
             virtual void saveContinuousActionCallback(Action<actionEnum_t>& action)
             {
                 m_runContinuousCallbacks.clear();

@@ -86,3 +86,21 @@ int main()
     handler.run();
     std::cout << "Returned from run()\n";
 }
+/*
+Output:
+In printIt. Value is 2
+In printIt. Value is 3
+Start running continuously
+In printIt. Value is 6
+Waited for 100ms
+count = 5
+count = 10
+count = 14. Will now queue a wait for 250ms
+Waited for 250ms
+count = 15
+count = 20
+count = 25
+Stopped running continuously
+Terminated the handler
+Returned from run()
+*/
