@@ -1,6 +1,8 @@
-#ActionHandler
+# ActionHandler
 
-demonstrates the use of jimo::theading::ActionHandler class.
+demonstrates the use of jimo::theading::ActionHandler class. In this case, there is only
+one thread, wth the ActionHandler running in that thread. This is not a `normal` thing to
+do.
 
 ## Sources
 
