@@ -18,6 +18,7 @@ add_executable(jimoTest
   ObjectTests.cpp
   StopWatchTests.cpp
   StopWatchExceptionTests.cpp
+  ThreadedActionHandlerTests.cpp
   TimerEventArgsTests.cpp
   TimerTests.cpp
   )
