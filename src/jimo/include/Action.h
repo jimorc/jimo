@@ -7,6 +7,7 @@
 #include <type_traits>
 #include "Delegate.h"
 
+using namespace std::placeholders;
 namespace jimo::threading
 {
     /// @brief Action struct
@@ -45,7 +46,7 @@ namespace jimo::threading
         /// @brief Constructor that defines an action, the data to pass to the handler,
         /// and a callback to execute once the action has been handled.
         /// @param act The action to perform.
-        /// @param data The data to pas to the action handler.
+        /// @param data The data to pass to the action handler.
         /// @param callbacks The callback functions to execute once the action has been
         /// executed.
         /// @note The callbacks are not called automatically. They must be explicitly called
@@ -53,6 +54,25 @@ namespace jimo::threading
         Action(actionEnum_t act, const std::any& data, 
             const jimo::Delegate<void, std::any>& callbacks)
             : action(act), actionData(data), actionCallback(callbacks) {}
+        /// @brief Constructor that defines an action, the data to pass to the handler,
+        /// and a callback in terms of an object method and the instance of that object,
+        /// @tparam object_t The class that contains the method to use as the action
+        /// callback.
+        /// @param act The action to perform.
+        /// @param data The data to pass to the action handler.
+        /// @param object The instance of the object containing the method to execute
+        /// as the callback.
+        /// @param method The object method to execute as the callback.
+        /// @note The callbacks are not called automatically. They must be explicitly called
+        /// from within the action handler.
+        template<typename object_t>
+        requires std::is_object_v<object_t>
+        Action(actionEnum_t act, const std::any& data, const object_t& object,
+            void(object_t::*method)(std::any))
+            : action(act), actionData(data)
+        {
+            actionCallback += std::bind(method, const_cast<object_t*>(&object), _1);
+        }
         /// @brief Copy constructor
         /// @param other The Action object to copy.
         Action(const Action& other) noexcept

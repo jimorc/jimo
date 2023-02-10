@@ -89,7 +89,6 @@ TEST(ActionTests, testMoveEquals)
     ASSERT_TRUE(action.actionCallback.empty());
 }
 
-
 TEST(ActionTests, testThreeArgsConstructor)
 {
     int value{};
@@ -106,4 +105,21 @@ TEST(ActionTests, testThreeArgsConstructor)
     Action<Actions> action2(Actions::last, 4, callbacks);
     action2.actionCallback(2);
     ASSERT_EQ(10, value);
+}
+
+TEST(ActionTests, testMethodConstructor)
+{
+    class Object
+    {
+        public:
+            Object() = default;
+            void cback(std::any value) { m_value = std::any_cast<int>(value); }
+            int value() { return m_value; }
+        private:
+            int m_value {};
+    };
+    Object o;
+    Action<Actions> action(Actions::first, {4}, o, &Object::cback);
+    action.actionCallback(42);
+    ASSERT_EQ(42, o.value());
 }
