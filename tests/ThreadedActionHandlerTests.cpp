@@ -92,8 +92,7 @@ TEST(ThreadedActionHandlerTests, testCrossThreadCommunications)
             {
                 m_tHandler->queueAction(Action<ThreadedHandlerActions>(
                     ThreadedHandlerActions::twoTimesValue, action.actionData,
-                    std::bind(&Handler::setValueInHandler, this, _1)
-                     ));
+                    *this, &Handler::setValueInHandler));
             }
             void setValue(Action<MainHandlerActions>& action)
             {
