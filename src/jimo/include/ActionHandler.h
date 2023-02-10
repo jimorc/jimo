@@ -84,7 +84,7 @@ namespace jimo::threading
                 }); 
             }
             /// @brief Destructor
-            virtual ~ActionHandler() = default;
+            virtual ~ActionHandler() noexcept = default;
             /// @brief Queue an action for processing.
             /// @param action The Action struct defining the action to perform.
             void queueAction(const Action<actionEnum_t>& action) noexcept
@@ -118,7 +118,7 @@ namespace jimo::threading
             /// to perform, the handler waits for the next action to be queued.
             /// @exception std::out_of_range exception if no handler has been added for
             /// the action defined by the action enumeration value.
-            void run()
+            virtual void run()
             {
                 std::unique_lock<std::mutex> lock(m_queueMutex, std::defer_lock);
                 while (true)
@@ -197,6 +197,15 @@ namespace jimo::threading
                     m_runContinuousCallbacks += callbacks;
                 }
             }
+            /// @brief Return the value of the terminate flag.
+            ///
+            /// This method is provided so that derived class objects can check if the
+            /// terminate flag has been set.
+            /// This flag is set only by queuing a terminate action. For example:
+            ///
+            /// `queueAction<Action<Actions>(Actions::terminate, {});`
+            /// @return The value of the terminate flag.
+            const std::atomic_bool& handlerTerminated() const noexcept { return m_terminate; }
         private:
             void startContinuousRun(Action<actionEnum_t>& action)
             {
