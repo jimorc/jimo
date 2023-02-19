@@ -15,6 +15,7 @@ add_executable(jimoTest
   DelegateTests.cpp
   EventArgsTests.cpp
   EventTests.cpp
+  MultipleActionDelegatesTests.cpp
   ObjectTests.cpp
   StopWatchTests.cpp
   StopWatchExceptionTests.cpp
