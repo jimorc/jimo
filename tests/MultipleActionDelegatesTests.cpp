@@ -3,7 +3,7 @@
 /// @copyright 2023 Jim Orcheson. Use dictated by MIT License.
 
 #include <gtest/gtest.h>
-#include "MulitpleActionDelegates.h"
+#include "MultipleActionDelegates.h"
 
 using namespace jimo;
 using namespace jimo::threading;
@@ -77,3 +77,36 @@ TEST(MultipleActionDelegatesTests, testActionsNotDefined)
     FAIL() << "Test did not throw expected std::out_of_range exception";
 }
 
+TEST(MultipleActionDelegatesTests, testRemoveFunctionFromDelegates)
+{
+    value = 2;
+    value2 = 13;
+    MultipleActionDelegates<TestActions> actDelegates;
+    actDelegates.addToDelegates(TestActions::action1, setValue);
+    actDelegates.addToDelegates(TestActions::action1, timesTwo);
+    actDelegates.removeFromDelegates(TestActions::action1, timesTwo);
+    actDelegates[TestActions::action1](4);
+    ASSERT_EQ(4, value);
+    ASSERT_EQ(13, value2);
+}
+
+TEST(MultipleActionDelegatesTests, testRemoveDelegateFromDelegates)
+{
+    value = 3;
+    value2 = 1;
+    MultipleActionDelegates<TestActions> actDelegates;
+    Delegate<void, std::any> delegate(setValue);
+    delegate += timesTwo;
+    actDelegates.addToDelegates(TestActions::action1, delegate);
+    ASSERT_EQ(2, actDelegates[TestActions::action1].size());
+    delegate -= timesTwo;
+    Delegate<void, std::any> delegate2(setValue);
+    ASSERT_TRUE(delegate == delegate2);
+    actDelegates.removeFromDelegates(TestActions::action1, delegate);
+    Delegate<void, std::any> delegate3(timesTwo);
+    ASSERT_TRUE(actDelegates[TestActions::action1] == delegate3);
+    actDelegates[TestActions::action1](7);
+    ASSERT_EQ(1, actDelegates[TestActions::action1].size());
+    ASSERT_EQ(3, value);
+    ASSERT_EQ(14, value2);
+}
