@@ -110,3 +110,34 @@ TEST(MultipleActionDelegatesTests, testRemoveDelegateFromDelegates)
     ASSERT_EQ(3, value);
     ASSERT_EQ(14, value2);
 }
+
+TEST(MultipleActionDelegatesTests, testRemoveFunctionFromDelegatesNoDelegates)
+{
+    MultipleActionDelegates<TestActions> actDelegates;
+    try
+    {
+        actDelegates.removeFromDelegates(TestActions::action2, timesTwo);
+    }
+    catch(const std::out_of_range&)
+    {
+        SUCCEED();
+        return;
+    }
+    FAIL() << "Did not throw std::out_of_range exception";
+}
+
+TEST(MultipleActionDelegatesTests, testRemoveDelegateFromDelegatesNoDelegates)
+{
+    MultipleActionDelegates<TestActions> actDelegates;
+    Delegate<void, std::any> delegate(timesTwo);
+    try
+    {
+        actDelegates.removeFromDelegates(TestActions::action2, delegate);
+    }
+    catch(const std::out_of_range&)
+    {
+        SUCCEED();
+        return;
+    }
+    FAIL() << "Did not throw std::out_of_range exception";
+}
