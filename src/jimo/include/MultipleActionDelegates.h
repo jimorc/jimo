@@ -91,6 +91,16 @@ namespace jimo::threading
                 m_multiActions.at(actionType) -= delegate;
                 return *this;
             }
+            /// @brief Get the size of the container.
+            ///
+            /// The size is the number of jimo::Delegate containers in this object.
+            /// @return The number of jimo::Delegate containers in this object.
+            /// @note std::size and std::ssize can also be used to retrieve the size
+            /// of the container.
+            size_t size() const noexcept
+            {
+                return m_multiActions.size();
+            }
             /// @brief Retrieve the jimo::Delegate object that is indexed by the argument.
             /// @param actionType The action enumeration value for which the jimo::Delegate
             /// is to be retrieved.

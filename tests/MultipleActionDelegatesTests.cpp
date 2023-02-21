@@ -169,3 +169,17 @@ TEST(MultipleActionDelegatesTests, testClear)
     actDelegates.clear();
     ASSERT_TRUE(actDelegates.empty());
 }
+
+TEST(MultipleActionDelegatesTests, testSize)
+{
+    MultipleActionDelegates<TestActions> actDelegates;
+    ASSERT_EQ(0, actDelegates.size());
+    ASSERT_EQ(0, std::size(actDelegates));
+    ASSERT_EQ(0, std::ssize(actDelegates));
+    actDelegates.addToDelegates(TestActions::action1, setValue)
+                .addToDelegates(TestActions::action1, square)
+                .addToDelegates(TestActions::action2, timesTwo);
+    ASSERT_EQ(2, actDelegates.size());
+    ASSERT_EQ(2, std::size(actDelegates));
+    ASSERT_EQ(2, std::ssize(actDelegates));
+}
