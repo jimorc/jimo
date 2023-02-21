@@ -28,47 +28,57 @@ namespace jimo::threading
             /// @param actionType The action enumeration that indexes the jimo::Delegate
             /// to store the function into.
             /// @param actionFunction The action function to add to the delegate.
-            void addToDelegates(enum_t actionType, const std::function<void(std::any)>& actionFunction)
+            /// @return The MultipleActionDelegates with the function added.
+            MultipleActionDelegates& addToDelegates(enum_t actionType, const std::function<void(std::any)>& actionFunction)
             {
                 m_multiActions[actionType] += actionFunction;
+                return *this;
             }
             /// @brief Add a jimo::Delegate
             /// @param actionType The action enumeration that indexes the jimo::Delegate
             /// that the delegates are to be added to.
             /// @param delegate the jimo::Delegate to add to the indexed delegates.
-            void addToDelegates(enum_t actionType, const jimo::Delegate<void, std::any>&
+            /// @return The MultipleActionDelegates with the functions in the Delegate added.
+            MultipleActionDelegates& addToDelegates(enum_t actionType, const jimo::Delegate<void, std::any>&
                 delegate)
             {
                 m_multiActions[actionType] += delegate;
+                return *this;
             }
+
             /// @brief Remove the function from the indexed Delegate.
             /// @param actionType The action enumeration that indexes the jimo::Delegate
             /// that the function is removed from.
             /// @param actionFunction The function to remove.
+            /// @return The MultipleActionDelegates with the function removed.
             /// @note All instances of the function are removed from the jimo::Delegate.
             /// @note No action is taken if the function is not present in the specified
             /// jimo::Delegate.
             /// @exception std::out_of_range exception if no entry exists
             /// for the actionType. No exception is thrown if an empty entry exists.
-            void removeFromDelegates(enum_t actionType, const std::function<void(std::any)>& actionFunction)
+            MultipleActionDelegates& removeFromDelegates(enum_t actionType, const std::function<void(std::any)>& actionFunction)
             {
                 m_multiActions.at(actionType) -= actionFunction;
+                return *this;
             }
             /// @brief Remove all functions in the jimo::Delegate parameter from the
             /// indexed jimo::Delegate.
             /// @param actionType The action enumeration that indexes the jimo::Delegate
             /// to remove the functions from.
             /// @param delegate The jimo::Delegate containing the functions to remove.
+            /// @return The MultipleActionDelegates with the functions in the Delegate
+            /// parameter removed.
             /// @note All instances of all functions in the Delegate parameter are
             /// removed from the indexed jimo::Delegate.
             /// @note If the indexed jimo::Delegate does not contain a function in the
             /// Delegate argument, then no action is taken for than function.
             /// @exception std::out_of_range exception if no entry exists
             /// for the actionType. No exception is thrown if an empty entry exists.
-            void removeFromDelegates(enum_t actionType, const jimo::Delegate<void, std::any>&
+            MultipleActionDelegates& removeFromDelegates(enum_t actionType, const jimo::Delegate<void, std::any>&
                 delegate)
             {
                 m_multiActions.at(actionType) -= delegate;
+                return *this;
             }
             /// @brief Retrieve the jimo::Delegate object that is indexed by the argument.
             /// @param actionType The action enumeration value for which the jimo::Delegate

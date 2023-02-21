@@ -17,16 +17,19 @@ enum class TestActions
 
 int value;
 int value2;
+int value3;
 auto setValue = [](std::any val) { value = std::any_cast<int>(val); };
 auto timesTwo = [](std::any val) { value2 = std::any_cast<int>(val) * 2; };
+auto square = [](std::any val) { int valueToSquare = std::any_cast<int>(val);
+                value3 = valueToSquare * valueToSquare; };
 
 TEST(MultipleActionDelegatesTests, testAddFunctionToDelegates)
 {
     value = 0;
     value2 = 0;
     MultipleActionDelegates<TestActions> actDelegates;
-    actDelegates.addToDelegates(TestActions::action1, setValue);
-    actDelegates.addToDelegates(TestActions::action1, timesTwo);
+    actDelegates.addToDelegates(TestActions::action1, setValue)
+                .addToDelegates(TestActions::action1, timesTwo);
     actDelegates[TestActions::action1](42);
     ASSERT_EQ(42, value);
     ASSERT_EQ(84, value2);
@@ -36,28 +39,36 @@ TEST(MultipleActionDelegatesTests, testAddDelegateToDelegates)
 {
     value = -10;
     value2 = -1;
+    value3 = 0;
     MultipleActionDelegates<TestActions> actDelegates;
     Delegate<void, std::any> delegate(setValue);
-    delegate += timesTwo;
-    actDelegates.addToDelegates(TestActions::action1, delegate);
-    actDelegates[TestActions::action1](42);
-    ASSERT_EQ(42, value);
-    ASSERT_EQ(84, value2);
+    delegate += square;
+    Delegate<void, std::any> delegate2(timesTwo);
+    actDelegates.addToDelegates(TestActions::action1, delegate)
+                .addToDelegates(TestActions::action1, delegate2);
+    actDelegates[TestActions::action1](4);
+    ASSERT_EQ(4, value);
+    ASSERT_EQ(8, value2);
+    ASSERT_EQ(16, value3);
 }
 
 TEST(MultipleActionDelegatesTests, testMulitpleActions)
 {
     value = 0;
     value2 = 0;
+    value3 = 0;
     MultipleActionDelegates<TestActions> actDelegates;
     actDelegates.addToDelegates(TestActions::action1, setValue);
     actDelegates.addToDelegates(TestActions::action2, timesTwo);
-    actDelegates[TestActions::action1](42);
-    ASSERT_EQ(42, value);
+    actDelegates.addToDelegates(TestActions::action1, square);
+    actDelegates[TestActions::action1](6);
+    ASSERT_EQ(6, value);
     ASSERT_EQ(0, value2);
+    ASSERT_EQ(36, value3);
     actDelegates[TestActions::action2](10);
-    ASSERT_EQ(42, value);
+    ASSERT_EQ(6, value);
     ASSERT_EQ(20, value2);
+    ASSERT_EQ(36, value3);
 }
 
 TEST(MultipleActionDelegatesTests, testActionsNotDefined)
@@ -81,34 +92,41 @@ TEST(MultipleActionDelegatesTests, testRemoveFunctionFromDelegates)
 {
     value = 2;
     value2 = 13;
+    value3 = 0;
     MultipleActionDelegates<TestActions> actDelegates;
     actDelegates.addToDelegates(TestActions::action1, setValue);
     actDelegates.addToDelegates(TestActions::action1, timesTwo);
-    actDelegates.removeFromDelegates(TestActions::action1, timesTwo);
+    actDelegates.addToDelegates(TestActions::action1, square);
+    actDelegates.removeFromDelegates(TestActions::action1, timesTwo)
+                .removeFromDelegates(TestActions::action1, square);
     actDelegates[TestActions::action1](4);
     ASSERT_EQ(4, value);
     ASSERT_EQ(13, value2);
+    ASSERT_EQ(0, value3);
 }
 
 TEST(MultipleActionDelegatesTests, testRemoveDelegateFromDelegates)
 {
     value = 3;
     value2 = 1;
+    value3 = 14;
     MultipleActionDelegates<TestActions> actDelegates;
     Delegate<void, std::any> delegate(setValue);
+    delegate += square;
     delegate += timesTwo;
     actDelegates.addToDelegates(TestActions::action1, delegate);
-    ASSERT_EQ(2, actDelegates[TestActions::action1].size());
-    delegate -= timesTwo;
-    Delegate<void, std::any> delegate2(setValue);
-    ASSERT_TRUE(delegate == delegate2);
-    actDelegates.removeFromDelegates(TestActions::action1, delegate);
-    Delegate<void, std::any> delegate3(timesTwo);
-    ASSERT_TRUE(actDelegates[TestActions::action1] == delegate3);
-    actDelegates[TestActions::action1](7);
+    ASSERT_EQ(3, actDelegates[TestActions::action1].size());
+    Delegate<void, std::any> delegate2(timesTwo);
+    Delegate<void, std::any> delegate3(setValue);
+    actDelegates.removeFromDelegates(TestActions::action1, delegate2)
+                .removeFromDelegates(TestActions::action1, delegate3);
     ASSERT_EQ(1, actDelegates[TestActions::action1].size());
+    Delegate<void, std::any> delegate4(square);
+    ASSERT_TRUE(actDelegates[TestActions::action1] == delegate4);
+    actDelegates[TestActions::action1](6);
     ASSERT_EQ(3, value);
-    ASSERT_EQ(14, value2);
+    ASSERT_EQ(1, value2);
+    ASSERT_EQ(36, value3);
 }
 
 TEST(MultipleActionDelegatesTests, testRemoveFunctionFromDelegatesNoDelegates)
