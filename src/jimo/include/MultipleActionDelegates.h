@@ -12,8 +12,7 @@ namespace jimo::threading
 {
     /// @brief MultipleActionDelegates class
     ///
-    /// This class holds multiple jimo::Delegate entries that are stored indexed on
-    /// the enumeration.
+    /// This class is a container for multiple jimo::Delegate<void, std::any> entries.
     /// @tparam enum_t The enumeration that is used to index the various jimo::Delegates.
     template<typename enum_t>
     requires std::is_enum_v<enum_t>
@@ -45,7 +44,19 @@ namespace jimo::threading
                 m_multiActions[actionType] += delegate;
                 return *this;
             }
-
+            /// @brief Erase all elements from the container.
+            ///
+            /// After this call, size() returns 0, and empty() returns true;
+            void clear() noexcept
+            {
+                m_multiActions.clear();
+            }
+            /// @brief Checks if the container has no elements.
+            /// @return `true` if the container is empty, `false` otherwise.
+            [[nodiscard]] bool empty() const noexcept
+            {
+                return m_multiActions.empty();
+            }
             /// @brief Remove the function from the indexed Delegate.
             /// @param actionType The action enumeration that indexes the jimo::Delegate
             /// that the function is removed from.
