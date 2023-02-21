@@ -159,3 +159,13 @@ TEST(MultipleActionDelegatesTests, testRemoveDelegateFromDelegatesNoDelegates)
     }
     FAIL() << "Did not throw std::out_of_range exception";
 }
+
+TEST(MultipleActionDelegatesTests, testClear)
+{
+    MultipleActionDelegates<TestActions> actDelegates;
+    actDelegates.addToDelegates(TestActions::action1, setValue)
+                .addToDelegates(TestActions::action1, square)
+                .addToDelegates(TestActions::action2, timesTwo);
+    actDelegates.clear();
+    ASSERT_TRUE(actDelegates.empty());
+}
