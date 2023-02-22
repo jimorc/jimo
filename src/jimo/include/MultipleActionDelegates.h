@@ -14,8 +14,14 @@ namespace jimo::threading
     ///
     /// This class is a container for multiple jimo::Delegate<void, std::any> entries.
     /// @tparam enum_t The enumeration that is used to index the various jimo::Delegates.
-    template<typename enum_t>
-    requires std::is_enum_v<enum_t>
+    /// @tparam result_t The result type for all delegate functions. This may be `void`,
+    /// but in that case, must be specified as so.
+    /// @tparam args_t The parameter types for all delegate functions. The size of
+    /// this parameter pack may be 0.
+    template<typename enum_t, typename result_t, typename... args_t>
+    requires std::is_enum_v<enum_t> &&
+        (std::is_void_v<result_t> || std::copyable<result_t>) &&
+        ( (sizeof...(args_t) == 0) || std::copyable<args_t...>)
     class MultipleActionDelegates
     {
         public:
@@ -28,7 +34,7 @@ namespace jimo::threading
             /// to store the function into.
             /// @param actionFunction The action function to add to the delegate.
             /// @return The MultipleActionDelegates with the function added.
-            MultipleActionDelegates& addToDelegates(enum_t actionType, const std::function<void(std::any)>& actionFunction)
+            MultipleActionDelegates& addToDelegates(enum_t actionType, const std::function<result_t(args_t...)>& actionFunction)
             {
                 m_multiActions[actionType] += actionFunction;
                 return *this;
@@ -38,7 +44,7 @@ namespace jimo::threading
             /// that the delegates are to be added to.
             /// @param delegate the jimo::Delegate to add to the indexed delegates.
             /// @return The MultipleActionDelegates with the functions in the Delegate added.
-            MultipleActionDelegates& addToDelegates(enum_t actionType, const jimo::Delegate<void, std::any>&
+            MultipleActionDelegates& addToDelegates(enum_t actionType, const jimo::Delegate<result_t, args_t...>&
                 delegate)
             {
                 m_multiActions[actionType] += delegate;
@@ -74,7 +80,7 @@ namespace jimo::threading
             /// jimo::Delegate.
             /// @exception std::out_of_range exception if no entry exists
             /// for the actionType. No exception is thrown if an empty entry exists.
-            MultipleActionDelegates& removeFromDelegates(enum_t actionType, const std::function<void(std::any)>& actionFunction)
+            MultipleActionDelegates& removeFromDelegates(enum_t actionType, const std::function<result_t(args_t...)>& actionFunction)
             {
                 m_multiActions.at(actionType) -= actionFunction;
                 return *this;
@@ -92,7 +98,7 @@ namespace jimo::threading
             /// Delegate argument, then no action is taken for than function.
             /// @exception std::out_of_range exception if no entry exists
             /// for the actionType. No exception is thrown if an empty entry exists.
-            MultipleActionDelegates& removeFromDelegates(enum_t actionType, const jimo::Delegate<void, std::any>&
+            MultipleActionDelegates& removeFromDelegates(enum_t actionType, const jimo::Delegate<result_t, args_t...>&
                 delegate)
             {
                 m_multiActions.at(actionType) -= delegate;
@@ -114,11 +120,11 @@ namespace jimo::threading
             /// @return The jimo::Delegate object.
             /// @exception std::out_of_range exception if the actionType does not exist
             /// in this MultipleActionDelegates object.
-            Delegate<void, std::any>& operator [](enum_t actionType)
+            Delegate<result_t, args_t...>& operator [](enum_t actionType)
             {
                 return m_multiActions.at(actionType);
             }
         private:
-            std::map<enum_t, jimo::Delegate<void, std::any>> m_multiActions;
+            std::map<enum_t, jimo::Delegate<result_t, args_t...>> m_multiActions;
     };
 }
