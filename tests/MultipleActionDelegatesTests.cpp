@@ -27,7 +27,7 @@ TEST(MultipleActionDelegatesTests, testAddFunctionToDelegates)
 {
     value = 0;
     value2 = 0;
-    MultipleActionDelegates<TestActions> actDelegates;
+    MultipleActionDelegates<TestActions, void, std::any> actDelegates;
     actDelegates.addToDelegates(TestActions::action1, setValue)
                 .addToDelegates(TestActions::action1, timesTwo);
     actDelegates[TestActions::action1](42);
@@ -40,7 +40,7 @@ TEST(MultipleActionDelegatesTests, testAddDelegateToDelegates)
     value = -10;
     value2 = -1;
     value3 = 0;
-    MultipleActionDelegates<TestActions> actDelegates;
+    MultipleActionDelegates<TestActions, void, std::any> actDelegates;
     Delegate<void, std::any> delegate(setValue);
     delegate += square;
     Delegate<void, std::any> delegate2(timesTwo);
@@ -57,7 +57,7 @@ TEST(MultipleActionDelegatesTests, testMulitpleActions)
     value = 0;
     value2 = 0;
     value3 = 0;
-    MultipleActionDelegates<TestActions> actDelegates;
+    MultipleActionDelegates<TestActions, void, std::any> actDelegates;
     actDelegates.addToDelegates(TestActions::action1, setValue);
     actDelegates.addToDelegates(TestActions::action2, timesTwo);
     actDelegates.addToDelegates(TestActions::action1, square);
@@ -73,7 +73,7 @@ TEST(MultipleActionDelegatesTests, testMulitpleActions)
 
 TEST(MultipleActionDelegatesTests, testActionsNotDefined)
 {
-    MultipleActionDelegates<TestActions> actDelegates;
+    MultipleActionDelegates<TestActions, void, std::any> actDelegates;
     actDelegates.addToDelegates(TestActions::action1, setValue);
     actDelegates.addToDelegates(TestActions::action2, timesTwo);
     try
@@ -93,7 +93,7 @@ TEST(MultipleActionDelegatesTests, testRemoveFunctionFromDelegates)
     value = 2;
     value2 = 13;
     value3 = 0;
-    MultipleActionDelegates<TestActions> actDelegates;
+    MultipleActionDelegates<TestActions, void, std::any> actDelegates;
     actDelegates.addToDelegates(TestActions::action1, setValue);
     actDelegates.addToDelegates(TestActions::action1, timesTwo);
     actDelegates.addToDelegates(TestActions::action1, square);
@@ -110,7 +110,7 @@ TEST(MultipleActionDelegatesTests, testRemoveDelegateFromDelegates)
     value = 3;
     value2 = 1;
     value3 = 14;
-    MultipleActionDelegates<TestActions> actDelegates;
+    MultipleActionDelegates<TestActions, void, std::any> actDelegates;
     Delegate<void, std::any> delegate(setValue);
     delegate += square;
     delegate += timesTwo;
@@ -131,7 +131,7 @@ TEST(MultipleActionDelegatesTests, testRemoveDelegateFromDelegates)
 
 TEST(MultipleActionDelegatesTests, testRemoveFunctionFromDelegatesNoDelegates)
 {
-    MultipleActionDelegates<TestActions> actDelegates;
+    MultipleActionDelegates<TestActions, void, std::any> actDelegates;
     try
     {
         actDelegates.removeFromDelegates(TestActions::action2, timesTwo);
@@ -146,7 +146,7 @@ TEST(MultipleActionDelegatesTests, testRemoveFunctionFromDelegatesNoDelegates)
 
 TEST(MultipleActionDelegatesTests, testRemoveDelegateFromDelegatesNoDelegates)
 {
-    MultipleActionDelegates<TestActions> actDelegates;
+    MultipleActionDelegates<TestActions, void, std::any> actDelegates;
     Delegate<void, std::any> delegate(timesTwo);
     try
     {
@@ -162,7 +162,7 @@ TEST(MultipleActionDelegatesTests, testRemoveDelegateFromDelegatesNoDelegates)
 
 TEST(MultipleActionDelegatesTests, testClear)
 {
-    MultipleActionDelegates<TestActions> actDelegates;
+    MultipleActionDelegates<TestActions, void, std::any> actDelegates;
     actDelegates.addToDelegates(TestActions::action1, setValue)
                 .addToDelegates(TestActions::action1, square)
                 .addToDelegates(TestActions::action2, timesTwo);
@@ -172,7 +172,7 @@ TEST(MultipleActionDelegatesTests, testClear)
 
 TEST(MultipleActionDelegatesTests, testSize)
 {
-    MultipleActionDelegates<TestActions> actDelegates;
+    MultipleActionDelegates<TestActions, void, std::any> actDelegates;
     ASSERT_EQ(0, actDelegates.size());
     ASSERT_EQ(0, std::size(actDelegates));
     ASSERT_EQ(0, std::ssize(actDelegates));
@@ -189,7 +189,7 @@ TEST(MultipleActionDelegatesTests, testErase)
     value = 1;
     value2 = 2;
     value3 = 3;
-    MultipleActionDelegates<TestActions> actDelegates;
+    MultipleActionDelegates<TestActions, void, std::any> actDelegates;
     actDelegates.addToDelegates(TestActions::action1, setValue)
                 .addToDelegates(TestActions::action1, square)
                 .addToDelegates(TestActions::action2, timesTwo);
@@ -200,4 +200,11 @@ TEST(MultipleActionDelegatesTests, testErase)
     itemsRemoved = actDelegates.erase(TestActions::action1);
     ASSERT_EQ(0, itemsRemoved);
     ASSERT_EQ(1, actDelegates.size());
+}
+
+TEST(MultipleActionDelegatesTests, testCompileableNoDelegateArgs)
+{
+    // just tests if can compile with no args for Delegate
+    MultipleActionDelegates<TestActions, void> actDelegates;
+    actDelegates.addToDelegates(TestActions::action1, []() { /*do something*/});
 }
