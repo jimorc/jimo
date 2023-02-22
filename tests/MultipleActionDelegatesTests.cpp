@@ -183,3 +183,21 @@ TEST(MultipleActionDelegatesTests, testSize)
     ASSERT_EQ(2, std::size(actDelegates));
     ASSERT_EQ(2, std::ssize(actDelegates));
 }
+
+TEST(MultipleActionDelegatesTests, testErase)
+{
+    value = 1;
+    value2 = 2;
+    value3 = 3;
+    MultipleActionDelegates<TestActions> actDelegates;
+    actDelegates.addToDelegates(TestActions::action1, setValue)
+                .addToDelegates(TestActions::action1, square)
+                .addToDelegates(TestActions::action2, timesTwo);
+    ASSERT_EQ(2, actDelegates.size());
+    auto itemsRemoved = actDelegates.erase(TestActions::action1);
+    ASSERT_EQ(1, itemsRemoved);
+    ASSERT_EQ(1, actDelegates.size());
+    itemsRemoved = actDelegates.erase(TestActions::action1);
+    ASSERT_EQ(0, itemsRemoved);
+    ASSERT_EQ(1, actDelegates.size());
+}
