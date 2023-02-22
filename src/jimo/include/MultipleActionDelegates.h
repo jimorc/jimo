@@ -57,6 +57,13 @@ namespace jimo::threading
             {
                 return m_multiActions.empty();
             }
+            /// @brief Remove the element (if it exists) with the key equivalent to `key`.
+            /// @param key Key value of the elements to remove.
+            /// @return Number of elements removed (0 or 1).
+            size_t erase(const enum_t& key)
+            {
+                return m_multiActions.erase(key);
+            }
             /// @brief Remove the function from the indexed Delegate.
             /// @param actionType The action enumeration that indexes the jimo::Delegate
             /// that the function is removed from.
