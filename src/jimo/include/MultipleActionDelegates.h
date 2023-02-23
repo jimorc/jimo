@@ -12,12 +12,19 @@ namespace jimo::threading
 {
     /// @brief MultipleActionDelegates class
     ///
-    /// This class is a container for multiple jimo::Delegate<void, std::any> entries.
+    /// This class is a container for multiple jimo::Delegate<result_t, args_t...> entries.
+    ///
+    /// Here is a program that illustrates the use of MultipleActionDelegates:
+    /// @include MultipleActionDelegates/MultipleActionDelegates1/MultipleActionDelegates1.cpp
     /// @tparam enum_t The enumeration that is used to index the various jimo::Delegates.
     /// @tparam result_t The result type for all delegate functions. This may be `void`,
     /// but in that case, must be specified as so.
     /// @tparam args_t The parameter types for all delegate functions. The size of
     /// this parameter pack may be 0.
+    /// @note All of the delegate functions must take the same parameter types. 
+    /// If your delegate functions require parameters of different
+    /// types, then use std::any as the parameter type and convert to the required types
+    /// in the delegate functions.
     template<typename enum_t, typename result_t, typename... args_t>
     requires std::is_enum_v<enum_t> &&
         (std::is_void_v<result_t> || std::copyable<result_t>) &&
