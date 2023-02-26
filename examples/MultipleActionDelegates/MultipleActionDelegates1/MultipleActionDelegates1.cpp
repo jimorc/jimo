@@ -2,7 +2,7 @@
 #include <iostream>
 #include <format>
 
-using namespace jimo::threading;
+using namespace jimo;
 
 enum class Actions
 {

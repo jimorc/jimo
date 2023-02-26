@@ -8,7 +8,7 @@
 #include <any>
 #include "Delegate.h"
 
-namespace jimo::threading
+namespace jimo
 {
     /// @brief MultipleActionDelegates class
     ///
