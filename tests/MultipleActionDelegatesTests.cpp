@@ -6,7 +6,6 @@
 #include "MultipleActionDelegates.h"
 
 using namespace jimo;
-using namespace jimo::threading;
 
 enum class TestActions
 {
