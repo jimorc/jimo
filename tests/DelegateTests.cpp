@@ -306,3 +306,50 @@ TEST(DelegateTests, TestMinusEqualsDelegate)
     ASSERT_EQ(1, delegate1.size());
     ASSERT_EQ(6, delegate1(3));
 }
+
+TEST(DelegateTests, testDelegatesInitializerListConstructor)
+{
+    struct Data
+    {
+        int one;
+        int two;
+        int three;
+        int setThree(int x)
+        {
+            three = x;
+            return three;
+        }
+    };
+
+    Data data;
+    Delegate<int, int> delegate { func2 };
+    Delegate<int, int> delegate2 { delegate, { addThree }, {data, &Data::setThree},
+        { [](int x){ int y = x; return y; } } };
+    ASSERT_EQ(4, delegate2.size());
+}
+
+TEST(DelegateTests, testFunctionsInitializerListConstructor)
+{
+    Delegate<int, int> delegate { func2, addThree, { [](int x){ int y = x; return y; }}};
+    ASSERT_EQ(3, delegate.size());
+}
+
+TEST(DelegateTests, testFunctionsDelegatesInitializerListConstructor)
+{
+    struct Data
+    {
+        int one;
+        int two;
+        int three;
+        int setThree(int x)
+        {
+            three = x;
+            return three;
+        }
+    };
+
+    Data data;
+    Delegate<int, int> delegate { {func2, addThree, [](int x){int y = x; return y;}},
+        {data, &Data::setThree}};
+    ASSERT_EQ(4, delegate.size());
+}

@@ -105,7 +105,7 @@ Here is an example that uses the LineWriter Delegate type as a parameter:
 ```
 void methodWithCallback(int value1, int value2, LineWriter callback)
 {
-    callback("The number is: " + to_string(value 1 + value2));
+    callback("The number is: " + to_string(value1 + value2));
 }
 ```
 You can then pass the Delegate created above to that method:

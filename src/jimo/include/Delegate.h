@@ -9,6 +9,7 @@
 #include <algorithm>
 #include <iterator>
 #include <mutex>
+#include <initializer_list>
 #include "EventArgs.h"
 
 namespace jimo
@@ -58,6 +59,36 @@ namespace jimo
             {
                 m_data->functions.push_back(function);
             }
+            /// @brief Construct Delegate object from intitializer_list of Delegate objects.
+            /// @param delegates List of delegates to construct Delegate object from.
+            Delegate(const std::initializer_list<const Delegate<result_t, arguments_t...>>& 
+                delegates)
+            {
+                for (const auto& delegate : delegates)
+                {
+                    *this += delegate;
+                }
+            }
+            /// @brief Construct Delegate object from initializer_list of functions, static class
+            /// methods, Functors, and lambdas.
+            /// @param functions The functions, static class methods, Functors, and lambdas to 
+            /// create the Delegate object from.
+            Delegate(const std::initializer_list<const function_t>& functions)
+            {
+                for (const auto& function : functions)
+                {
+                    *this += function;
+                }
+            }
+            /// @brief Construct Delegate object from an initializer_list of functions, static class
+            /// methods, Functors, and lambdas, and an initializer_list of Delegates.
+            /// @param functions The list of functions, static_class methods, Functors, and
+            /// lambdas.
+            /// @param delegates The list of delegates.
+            Delegate(const std::initializer_list<const function_t>& functions,
+                const std::initializer_list<Delegate<result_t, arguments_t...>>&
+                    delegates)
+                : Delegate(functions), Delegate(delegates) {}
             /// @brief Constructor that takes const method with no parameters
             /// @tparam object_t The type of the class containing the method to store as the delegate.
             /// @param object The class instance for the method.
