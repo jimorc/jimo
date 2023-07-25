@@ -327,14 +327,6 @@ namespace jimo
                 }
                 return true;
             }
-            /// @brief Compares two Delegates for inequality
-            /// @param other The second Delegate object to compare to this
-            /// @return Return true if the Delegate objects do not contain the same delegates
-            /// in the same order, otherwise false.
-            bool operator !=(const Delegate& other)
-            {
-                return !operator ==(other);
-            }
             /// @brief Retrieve the number of functions in the Delegate object
             /// @return The number of functions
             size_t size() { return m_data->functions.size(); }
