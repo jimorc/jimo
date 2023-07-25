@@ -1,7 +1,8 @@
 # jimo
 A library of C++20 general-purpose classes
 
-This library contains a small collection of general purpose classes, including timing and cross-thread communications classes.
+This library contains a small collection of general purpose classes, including timing and 
+cross-thread communications classes.
 
 ## Timing
 
@@ -17,11 +18,67 @@ Any attempt to reuse a OnceTimer object throws an exception.
 
 ## Building jimo
 
-While work on this library began on MacOS 13 using C++20, I have moved development to Windows 11 because MSVC has the most complete implementation of
-C++20. When development on Windows 11 using MSVC is completed, the library will be ported to Linux using gcc and then MacOS using Apple clang. When
+### Current State of Development
+
+While work on this library began on MacOS 13 using C++20, I have moved development to Windows 11 
+because MSVC has the most complete implementation of
+C++20. When development on Windows 11 using MSVC is completed, the library will be ported to Linux 
+using gcc and then MacOS using Apple clang. When
 development on Windows 11 is completed, up-to-date building instructions will be provided.
 
-### MacOS
+### Command Line
+
+It is possible to build the jimo library, tests, example applications, and its documentation just 
+using command line tools. Instructions are provided below for building jimo using the command line 
+on each of MacOS, Windows, and Linux.
+
+If you want to use the jimo library and will not be modifying it, then it is not even necessary to 
+perform a build because the library is header based, and no executable is needed, or even produced 
+during the build process. All documentation is provided online. You will, however, need to follow
+the build instructions if you want to install the library on your system rather than just use it 
+within a single C++ project. More instructions on installing the library will be provided when 
+development is complete.
+
+As an alternative to building on the command line, you can use an IDE. For that, you will have to 
+follow the IDE specific instructions for using cmake to create project files.
+
+### Using an IDE
+
+The source for this library includes CMake files for building the library. You can  use any IDE that
+allows the importation of CMake files. This includes pretty much every IDE that supports C++ today.
+
+I use VSCode as an editor/IDE because it runs on all of the platforms that I will build the jimo 
+library on. Instructions for installing VSCode on each of the platforms are included in the 
+appropriate sections below. However, you can use any IDE or set of tools that you want if you are
+doing any development. And you do not need any of the tools if you simply intend to use the jimo 
+library and not do intend to make any changes to the jimo library.
+
+ #### My Setup for VSCode
+
+ Here are the tools, programming languages, and VSCode extensions that I use to build the library 
+ with VSCode.
+
+ 1. VSCode. See the [VSCode download page](https://code.visualstudio.com/download) for executables. 
+ Microsoft provides extensive documentation about how to set up VSCode for C++ development.
+
+ 2. The latest Python. Python is required to provide some functionality in VSCode. See the
+  [Python download page](https://www.python.org/downloads/) for further details. 
+  Note that on Linux and some other systems, Python is also available through package installers.
+
+ 3. The following VSCode extensions:
+     - C/C++ Extension Pack
+     - C++ TestMate
+     - GoogleTest Adapter
+     - Doxygen Documentation Generator
+
+4. I also find the following extensions useful, but they are not essential:
+     - Git History
+     - Print
+
+### Building on MacOS
+*Note: This section is out of date. Attempts to build the jimo library using the here will result in 
+a large number of errors. I am simply maintaining it here to prevent having to recreate all of this 
+information when I have completed development on MacOS.
 
 A number of tools are required. Be sure that the following is already installed on your system:
 
@@ -32,7 +89,8 @@ A number of tools are required. Be sure that the following is already installed 
 xcode-select - install
 ```
 
-3. A number of additional tools are required. These are installed using Homebrew. See the [installation instructions](https://docs.brew.sh/Installation) for how to install Homebrew.
+3. A number of additional tools are required. These are installed using Homebrew. See the 
+[installation instructions](https://docs.brew.sh/Installation) for how to install Homebrew.
 
 4. Once Homebrew is installed, enter the following in the terminal:
 ```zsh
@@ -70,9 +128,7 @@ using lldb on the command line.
 >
 > I have been unsuccessful attempting to debug from within VS Code.
 
-As an alternative to building on the command line, you can use an IDE. For that, you will have to follow the IDE specific instructions for using cmake to create project files. You must still build the documentation from a terminal.
-
-### Windows
+### Building on Windows
 The following is the minimum required to build the jimo library on Windows 10/11 systems:
 1. Install Visual Studio (latest version). Community edition is sufficient. Select:
    * Desktop development with C++
@@ -95,5 +151,5 @@ cmake --build . --config Debug --target docs -j 6
 ```
    If you wish, replace 6 with the number of cores that your processor has.
 
-### Linux
+### Building on Linux
 To be added.
