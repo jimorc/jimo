@@ -1,4 +1,6 @@
 # jimo
+**This project has been terminated. For about the fourth time in my life, I have become too frustrated with C++ to continue this.**
+
 A library of C++20 general-purpose classes
 
 This library contains a small collection of general purpose classes, including timing and 
